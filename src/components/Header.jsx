@@ -1,58 +1,51 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import Container from "./Container";
+import {
+  FiMenu,
+  FiX,
+  FiSearch,
+  FiShoppingCart,
+  FiUser,
+  FiChevronDown,
+  FiGrid,
+} from "react-icons/fi";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [panelClass, setPanelClass] = useState("-translate-y-full opacity-0");
   const menuRef = useRef(null);
+  const [mobileShopOpen, setMobileShopOpen] = useState(false);
 
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") setMobileOpen(false);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+  const closeMenu = useCallback(() => {
+    setMobileOpen(false);
   }, []);
 
+  /* ESC key close */
   useEffect(() => {
-    // Prevent body scroll when mobile menu is open
+    const onKey = (e) => e.key === "Escape" && closeMenu();
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [closeMenu]);
+
+  /* Lock body scroll */
+  useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
   }, [mobileOpen]);
 
+  /* Click outside close */
   useEffect(() => {
-    // if click outside close
+    if (!mobileOpen) return;
+
     const onClick = (e) => {
-      if (
-        menuVisible &&
-        menuRef.current &&
-        !menuRef.current.contains(e.target)
-      ) {
-        // animate out then hide (slide up)
-        setPanelClass("-translate-y-full opacity-0");
-        setTimeout(() => {
-          setMenuVisible(false);
-          setMobileOpen(false);
-        }, 300);
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        closeMenu();
       }
     };
-    document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, [menuVisible]);
 
-  // sync mobileOpen -> menuVisible with animation
-  useEffect(() => {
-    if (mobileOpen) {
-      setMenuVisible(true);
-      // allow mount then animate in (slide down)
-      requestAnimationFrame(() => requestAnimationFrame(() => setPanelClass("translate-y-0 opacity-100")));
-    } else if (menuVisible) {
-      // if mobileOpen became false programmatically, animate out then unmount (slide up)
-      setPanelClass("-translate-y-full opacity-0");
-      setTimeout(() => setMenuVisible(false), 300);
-    }
-  }, [mobileOpen]);
+    document.addEventListener("pointerdown", onClick);
+    return () => document.removeEventListener("pointerdown", onClick);
+  }, [mobileOpen, closeMenu]);
 
   return (
     <header className="w-full bg-white border-b border-gray-200 z-40 relative">
@@ -61,7 +54,7 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex-shrink-0">
             <h1 className="text-2xl sm:text-3xl lg:text-[24px] font-bold">
-             BackBanchers Shop
+              BackBanchers Shop
             </h1>
           </Link>
 
@@ -69,58 +62,49 @@ const Header = () => {
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             <div className="relative group">
               <button className="flex items-center gap-1 text-base hover:text-gray-600 transition-colors">
-                Shop
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
+                Shop <FiChevronDown className="w-4 h-4" />
               </button>
+
+              {/* Desktop dropdown */}
+              <div className="absolute left-0 top-full mt-2 w-48 bg-gradient-to-b from-white to-gray-50 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transform translate-y-1 group-hover:translate-y-0 transition-all ring-1 ring-black/5">
+                <div className="px-3 py-2">
+                  <a href="/shop" className="flex items-center gap-2 px-2 py-2 rounded-md text-sm font-semibold hover:bg-gray-100">
+                    <FiGrid className="w-4 h-4" />
+                    Show All
+                  </a>
+                </div>
+                <div className="border-t" />
+                <ul className="py-1">
+                  <li>
+                    <a href="/shop/casual" className="block px-4 py-2 text-sm hover:bg-gray-100">Casual</a>
+                  </li>
+                  <li>
+                    <a href="/shop/formal" className="block px-4 py-2 text-sm hover:bg-gray-100">Formal</a>
+                  </li>
+                  <li>
+                    <a href="/shop/party" className="block px-4 py-2 text-sm hover:bg-gray-100">Party</a>
+                  </li>
+                  <li>
+                    <a href="/shop/gym" className="block px-4 py-2 text-sm hover:bg-gray-100">Gym</a>
+                  </li>
+                </ul>
+              </div>
             </div>
-            <Link
-              to="/on-sale"
-              className="text-base hover:text-gray-600 transition-colors"
-            >
+            <Link to="/on-sale" className="text-base hover:text-gray-600">
               On Sale
             </Link>
-            <Link
-              to="/new-arrivals"
-              className="text-base hover:text-gray-600 transition-colors"
-            >
+            <Link to="/new-arrivals" className="text-base hover:text-gray-600">
               New Arrivals
             </Link>
-            <Link
-              to="/brands"
-              className="text-base hover:text-gray-600 transition-colors"
-            >
+            <Link to="/brands" className="text-base hover:text-gray-600">
               Brands
             </Link>
           </nav>
 
-          {/* Search Bar - Desktop */}
+          {/* Desktop Search */}
           <div className="hidden md:flex items-center flex-1 max-w-xl mx-4 lg:mx-8 xl:mx-12">
             <div className="relative w-full">
-              <svg
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search for products..."
@@ -131,50 +115,27 @@ const Header = () => {
 
           {/* Icons */}
           <div className="flex items-center gap-3 sm:gap-4">
-            {/* Cart Icon - visible on lg+ */}
-            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="View cart">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
+            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 rounded-lg">
+              <FiShoppingCart className="w-6 h-6" />
             </button>
-
-            {/* User/Profile Icon - visible on lg+ */}
-            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 rounded-lg transition-colors" aria-label="Account">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 rounded-lg">
+              <FiUser className="w-6 h-6" />
             </button>
-
-            {/* Mobile Menu Button */}
             <button
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
-              onClick={() => setMobileOpen((s) => !s)}
-              className="lg:hidden p-2  rounded-lg transition-colors"
+              onClick={() => setMobileOpen((v) => !v)}
+              className="lg:hidden p-2 rounded-lg"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+              <FiMenu className="w-6 h-6" />
             </button>
           </div>
         </div>
 
-        {/* Mobile Search Bar */}
+        {/* Mobile Search */}
         <div className="md:hidden pb-4">
           <div className="relative w-full">
-            <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
               placeholder="Search for products..."
@@ -184,96 +145,74 @@ const Header = () => {
         </div>
       </Container>
 
-      {/* Mobile menu overlay */}
-      {menuVisible && (
-        <div className="fixed inset-0 z-50">
-          <div className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${panelClass.includes('opacity-100') ? 'opacity-100' : 'opacity-0'}`} />
-          <div
-            ref={menuRef}
-            className={`absolute top-0 left-0 w-full bg-white shadow-md transform transition-all duration-300 ${panelClass}`}
-          >
-            <div className="mx-auto px-6 py-6">
-              <div className="flex items-center justify-between">
-                <Link
-                  to="/"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-2xl font-bold"
-                >
-                  BackBanchers Shop
-                </Link>
+      {/* Mobile Menu */}
+      <div
+        className={`fixed inset-0 z-50 transition-opacity duration-300 ${
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+
+        <div
+          ref={menuRef}
+          className={`absolute top-0 left-0 w-full bg-white shadow-md transform transition-all duration-300 ${
+            mobileOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+          }`}
+        >
+          <div className="mx-auto px-6 py-6">
+            <div className="flex items-center justify-between">
+              <Link to="/" onClick={closeMenu} className="text-2xl font-bold">
+                BackBanchers Shop
+              </Link>
+              <button onClick={closeMenu} className="p-2">
+                <FiX className="w-6 h-6" />
+              </button>
+            </div>
+
+            <nav className="mt-6 flex flex-col gap-4">
+              <Link to="/" onClick={closeMenu} className="text-lg">Home</Link>
+              <Link to="/on-sale" onClick={closeMenu} className="text-lg">On Sale</Link>
+              <Link to="/new-arrivals" onClick={closeMenu} className="text-lg">New Arrivals</Link>
+              <Link to="/brands" onClick={closeMenu} className="text-lg">Brands</Link>
+
+              {/* Mobile Shop accordion */}
+              <div>
                 <button
-                  aria-label="Close menu"
-                  onClick={() => setMobileOpen(false)}
-                  className="p-2"
+                  onClick={() => setMobileShopOpen((v) => !v)}
+                  className="w-full flex items-center justify-between text-lg font-medium"
                 >
-                  <svg
-                    className="w-6 h-6"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
+                  <span>Shop</span>
+                  <FiChevronDown className={`w-5 h-5 transition-transform ${mobileShopOpen ? 'rotate-180' : ''}`} />
                 </button>
-              </div>
 
-              <nav className="mt-6 flex flex-col gap-4">
-                <Link
-                  to="/"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-lg font-medium"
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/on-sale"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-lg"
-                >
-                  On Sale
-                </Link>
-                <Link
-                  to="/new-arrivals"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-lg"
-                >
-                  New Arrivals
-                </Link>
-                <Link
-                  to="/brands"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-lg"
-                >
-                  Brands
-                </Link>
-                <Link
-                  to="/shop"
-                  onClick={() => setMobileOpen(false)}
-                  className="text-lg"
-                >
-                  Shop
-                </Link>
-              </nav>
-
-              <div className="mt-6 border-t pt-4">
-                <div className="flex gap-3">
-                  <button className="flex-1 py-3 bg-black text-white rounded-md">
-                    View Cart
-                  </button>
-                  <button className="flex-1 py-3 border rounded-md">
-                    Account
-                  </button>
+                <div className={`mt-2 pl-0 border-l border-transparent overflow-hidden transition-all ${mobileShopOpen ? 'max-h-56' : 'max-h-0'}`}>
+                  <div className="bg-gradient-to-r from-white to-gray-50 rounded-md p-3 ring-1 ring-black/5">
+                    <Link to="/shop" onClick={closeMenu} className="flex items-center gap-2 py-2 px-2 rounded-md hover:bg-gray-100 font-semibold">
+                      <FiGrid className="w-4 h-4" />
+                      Show All
+                    </Link>
+                    <div className="mt-2 border-t pt-2">
+                      <Link to="/shop/casual" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Casual</Link>
+                      <Link to="/shop/formal" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Formal</Link>
+                      <Link to="/shop/party" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Party</Link>
+                      <Link to="/shop/gym" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Gym</Link>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </nav>
+
+            <div className="mt-6 border-t pt-4 flex gap-3">
+              <button className="flex-1 py-3 bg-black text-white rounded-md">
+                View Cart
+              </button>
+              <button className="flex-1 py-3 border rounded-md">
+                Account
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 };
