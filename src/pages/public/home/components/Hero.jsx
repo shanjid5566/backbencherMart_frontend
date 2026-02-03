@@ -1,9 +1,10 @@
 import React from 'react'
+import Container from '../../../../components/Container'
 
 const Hero = () => {
   return (
     <section className="w-full bg-[#F2F0F1]">
-      <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-16 xl:px-24">
+      <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-12 py-10 sm:py-14 lg:py-20">
           {/* Left Content */}
           <div className="order-1 lg:order-1 flex flex-col justify-center">
@@ -19,7 +20,7 @@ const Hero = () => {
               Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.
             </p>
 
-            <div className="flex items-start gap-6 flex-col sm:flex-row sm:items-center">
+            <div className="flex items-center justify-center lg:justify-start gap-6 flex-col sm:flex-row">
               <button className="bg-black text-white px-10 sm:px-14 py-3 sm:py-4 rounded-full text-sm sm:text-base font-medium hover:bg-gray-900 transition-colors shadow-md w-full sm:w-auto">
                 Shop Now
               </button>
@@ -89,7 +90,7 @@ const Hero = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }
