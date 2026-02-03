@@ -1,8 +1,8 @@
 import BrandProduct from './public/home/components/BrandProduct'
 import Hero from './public/home/components/Hero'
 import TopSelling from './public/home/components/TopSelling'
-import BrowseByStyle from './public/home/components/BrowseByStyle'
 import NewArrivals from './public/home/components/NewArrivals'
+import Reviews from './public/home/components/Reviews'
 
 const HomePage = () => {
   return (
@@ -11,7 +11,7 @@ const HomePage = () => {
       <BrandProduct />
       <NewArrivals />
       <TopSelling />
-      <BrowseByStyle />
+      <Reviews />
     </div>
   )
 }
