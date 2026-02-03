@@ -62,7 +62,7 @@ const NewArrivals = () => {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <button className="px-6 py-3 rounded-full border border-gray-300 dark:border-gray-600">View All</button>
+          <button className="px-16 py-3 rounded-2xl border border-gray-300 dark:border-gray-600">View All</button>
         </div>
       </Container>
     </section>

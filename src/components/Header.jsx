@@ -55,7 +55,7 @@ const Header = () => {
   }, [mobileOpen, closeMenu]);
 
   return (
-    <header className="w-full bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-gray-700 z-40 relative transition-colors duration-300">
+    <header className="sticky top-0 w-full bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-gray-700 z-50 transition-colors duration-300">
       <Container>
         <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24">
           {/* Logo */}
