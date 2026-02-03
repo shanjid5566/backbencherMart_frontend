@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
 import Container from "./Container";
 import {
   FiMenu,
@@ -9,12 +10,18 @@ import {
   FiUser,
   FiChevronDown,
   FiGrid,
+  FiSun,
+  FiMoon,
 } from "react-icons/fi";
+import { toggleTheme, selectIsDarkMode } from "../features/theme/themeSlice";
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const menuRef = useRef(null);
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
+  
+  const dispatch = useDispatch();
+  const isDarkMode = useSelector(selectIsDarkMode);
 
   const closeMenu = useCallback(() => {
     setMobileOpen(false);
@@ -48,12 +55,12 @@ const Header = () => {
   }, [mobileOpen, closeMenu]);
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 z-40 relative">
+    <header className="w-full bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-gray-700 z-40 relative transition-colors duration-300">
       <Container>
         <div className="flex items-center justify-between h-16 sm:h-20 lg:h-24">
           {/* Logo */}
-          <Link to="/" className="flex-shrink-0">
-            <h1 className="text-2xl sm:text-3xl lg:text-[24px] font-bold">
+          <Link to="/" className="flex-shrink-0 mr-8 lg:mr-12">
+            <h1 className="text-2xl sm:text-3xl lg:text-[24px] font-bold dark:text-white">
               BackBanchers Shop
             </h1>
           </Link>
@@ -61,42 +68,42 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             <div className="relative group">
-              <button className="flex items-center gap-1 text-base hover:text-gray-600 transition-colors">
+              <button className="flex items-center gap-1 text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white transition-colors">
                 Shop <FiChevronDown className="w-4 h-4" />
               </button>
 
               {/* Desktop dropdown */}
-              <div className="absolute left-0 top-full mt-2 w-48 bg-gradient-to-b from-white to-gray-50 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transform translate-y-1 group-hover:translate-y-0 transition-all ring-1 ring-black/5">
+              <div className="absolute left-0 top-full mt-2 w-48 bg-gradient-to-b from-white to-gray-50 dark:from-dark-surface dark:to-gray-800 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transform translate-y-1 group-hover:translate-y-0 transition-all ring-1 ring-black/5 dark:ring-white/10">
                 <div className="px-3 py-2">
-                  <a href="/shop" className="flex items-center gap-2 px-2 py-2 rounded-md text-sm font-semibold hover:bg-gray-100">
+                  <a href="/shop" className="flex items-center gap-2 px-2 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                     <FiGrid className="w-4 h-4" />
                     Show All
                   </a>
                 </div>
-                <div className="border-t" />
+                <div className="border-t dark:border-gray-700" />
                 <ul className="py-1">
                   <li>
-                    <a href="/shop/casual" className="block px-4 py-2 text-sm hover:bg-gray-100">Casual</a>
+                    <a href="/shop/casual" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Casual</a>
                   </li>
                   <li>
-                    <a href="/shop/formal" className="block px-4 py-2 text-sm hover:bg-gray-100">Formal</a>
+                    <a href="/shop/formal" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Formal</a>
                   </li>
                   <li>
-                    <a href="/shop/party" className="block px-4 py-2 text-sm hover:bg-gray-100">Party</a>
+                    <a href="/shop/party" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Party</a>
                   </li>
                   <li>
-                    <a href="/shop/gym" className="block px-4 py-2 text-sm hover:bg-gray-100">Gym</a>
+                    <a href="/shop/gym" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Gym</a>
                   </li>
                 </ul>
               </div>
             </div>
-            <Link to="/on-sale" className="text-base hover:text-gray-600">
+            <Link to="/on-sale" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
               On Sale
             </Link>
-            <Link to="/new-arrivals" className="text-base hover:text-gray-600">
+            <Link to="/new-arrivals" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
               New Arrivals
             </Link>
-            <Link to="/brands" className="text-base hover:text-gray-600">
+            <Link to="/brands" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
               Brands
             </Link>
           </nav>
@@ -108,17 +115,29 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Search for products..."
-                className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+                className="w-full pl-12 pr-4 py-3 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors"
               />
             </div>
           </div>
 
           {/* Icons */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 rounded-lg">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => dispatch(toggleTheme())}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {isDarkMode ? (
+                <FiSun className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
+              ) : (
+                <FiMoon className="w-5 h-5 sm:w-6 sm:h-6" />
+              )}
+            </button>
+            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
               <FiShoppingCart className="w-6 h-6" />
             </button>
-            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 rounded-lg">
+            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
               <FiUser className="w-6 h-6" />
             </button>
             <button
@@ -139,7 +158,7 @@ const Header = () => {
             <input
               type="text"
               placeholder="Search for products..."
-              className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-300"
+              className="w-full pl-12 pr-4 py-3 bg-gray-100 dark:bg-gray-800 dark:text-white rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-600 transition-colors"
             />
           </div>
         </div>
@@ -155,58 +174,58 @@ const Header = () => {
 
         <div
           ref={menuRef}
-          className={`absolute top-0 left-0 w-full bg-white shadow-md transform transition-all duration-300 ${
+          className={`absolute top-0 left-0 w-full bg-white dark:bg-dark-surface shadow-md transform transition-all duration-300 ${
             mobileOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           }`}
         >
           <div className="mx-auto px-6 py-6">
             <div className="flex items-center justify-between">
-              <Link to="/" onClick={closeMenu} className="text-2xl font-bold">
+              <Link to="/" onClick={closeMenu} className="text-2xl font-bold dark:text-white">
                 BackBanchers Shop
               </Link>
-              <button onClick={closeMenu} className="p-2">
+              <button onClick={closeMenu} className="p-2 dark:text-white">
                 <FiX className="w-6 h-6" />
               </button>
             </div>
 
             <nav className="mt-6 flex flex-col gap-4">
-              <Link to="/" onClick={closeMenu} className="text-lg">Home</Link>
-              <Link to="/on-sale" onClick={closeMenu} className="text-lg">On Sale</Link>
-              <Link to="/new-arrivals" onClick={closeMenu} className="text-lg">New Arrivals</Link>
-              <Link to="/brands" onClick={closeMenu} className="text-lg">Brands</Link>
+              <Link to="/" onClick={closeMenu} className="text-lg dark:text-gray-200">Home</Link>
+              <Link to="/on-sale" onClick={closeMenu} className="text-lg dark:text-gray-200">On Sale</Link>
+              <Link to="/new-arrivals" onClick={closeMenu} className="text-lg dark:text-gray-200">New Arrivals</Link>
+              <Link to="/brands" onClick={closeMenu} className="text-lg dark:text-gray-200">Brands</Link>
 
               {/* Mobile Shop accordion */}
               <div>
                 <button
                   onClick={() => setMobileShopOpen((v) => !v)}
-                  className="w-full flex items-center justify-between text-lg font-medium"
+                  className="w-full flex items-center justify-between text-lg font-medium dark:text-white"
                 >
                   <span>Shop</span>
                   <FiChevronDown className={`w-5 h-5 transition-transform ${mobileShopOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 <div className={`mt-2 pl-0 border-l border-transparent overflow-hidden transition-all ${mobileShopOpen ? 'max-h-56' : 'max-h-0'}`}>
-                  <div className="bg-gradient-to-r from-white to-gray-50 rounded-md p-3 ring-1 ring-black/5">
-                    <Link to="/shop" onClick={closeMenu} className="flex items-center gap-2 py-2 px-2 rounded-md hover:bg-gray-100 font-semibold">
+                  <div className="bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-md p-3 ring-1 ring-black/5 dark:ring-white/10">
+                    <Link to="/shop" onClick={closeMenu} className="flex items-center gap-2 py-2 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 font-semibold dark:text-white">
                       <FiGrid className="w-4 h-4" />
                       Show All
                     </Link>
-                    <div className="mt-2 border-t pt-2">
-                      <Link to="/shop/casual" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Casual</Link>
-                      <Link to="/shop/formal" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Formal</Link>
-                      <Link to="/shop/party" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Party</Link>
-                      <Link to="/shop/gym" onClick={closeMenu} className="block py-2 px-2 hover:bg-white">Gym</Link>
+                    <div className="mt-2 border-t dark:border-gray-600 pt-2">
+                      <Link to="/shop/casual" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Casual</Link>
+                      <Link to="/shop/formal" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Formal</Link>
+                      <Link to="/shop/party" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Party</Link>
+                      <Link to="/shop/gym" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Gym</Link>
                     </div>
                   </div>
                 </div>
               </div>
             </nav>
 
-            <div className="mt-6 border-t pt-4 flex gap-3">
-              <button className="flex-1 py-3 bg-black text-white rounded-md">
+            <div className="mt-6 border-t dark:border-gray-700 pt-4 flex gap-3">
+              <button className="flex-1 py-3 bg-black dark:bg-white dark:text-black text-white rounded-md transition-colors">
                 View Cart
               </button>
-              <button className="flex-1 py-3 border rounded-md">
+              <button className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white transition-colors">
                 Account
               </button>
             </div>

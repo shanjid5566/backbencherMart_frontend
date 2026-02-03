@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Primary Color: Black */
   --color-brand-primary: #000000;
@@ -8,12 +10,23 @@
   --color-brand-secondary: rgba(0, 0, 0, 0.6);
   
   /* Accent Color: Your Specified Code (FF3333) */
-  --color-brand-accent: #FF3333; 
+  --color-brand-accent: #FF3333;
+
+  /* Dark mode colors */
+  --color-dark-bg: #121212;
+  --color-dark-surface: #1E1E1E;
+  --color-dark-text: #E5E5E5;
+  --color-dark-text-secondary: #A3A3A3;
 }
 
 /* Base Styles */
 @layer base {
   body {
-    @apply font-sans text-brand-primary antialiased;
+    @apply font-sans text-brand-primary antialiased bg-white transition-colors duration-300;
+  }
+  
+  .dark body,
+  body:where(.dark *) {
+    @apply bg-dark-bg text-dark-text;
   }
 }

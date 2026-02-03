@@ -11,7 +11,7 @@ const BrandProduct = () => {
   ]
 
   return (
-    <section className="w-full bg-black py-8 sm:py-10 lg:py-12">
+    <section className="w-full bg-black py-8 sm:py-10 lg:py-12 transition-colors duration-300">
       <Container>
         <div className="flex flex-wrap justify-center sm:justify-between items-center gap-6 sm:gap-8 lg:gap-12">
           {brands.map((brand, index) => (
