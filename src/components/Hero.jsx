@@ -3,69 +3,88 @@ import React from 'react'
 const Hero = () => {
   return (
     <section className="w-full bg-[#F2F0F1]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-16 xl:px-24">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 py-8 sm:py-12 lg:py-16 xl:py-20">
+      <div className="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-16 xl:px-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-12 py-10 sm:py-14 lg:py-20">
           {/* Left Content */}
-          <div className="flex flex-col justify-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-[64px] font-bold leading-tight mb-5 sm:mb-6 lg:mb-8">
+          <div className="order-1 lg:order-1 flex flex-col justify-center">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-extrabold leading-tight tracking-tight mb-4 sm:mb-6 lg:mb-8">
               FIND CLOTHES
               <br />
               THAT MATCHES
               <br />
               YOUR STYLE
             </h1>
-            
-            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 max-w-lg">
+
+            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 max-w-xl">
               Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.
             </p>
 
-            <button className="bg-black text-white px-12 sm:px-16 py-3 sm:py-4 rounded-full text-sm sm:text-base font-medium hover:bg-gray-800 transition-colors w-full sm:w-auto max-w-[210px]">
-              Shop Now
-            </button>
+            <div className="flex items-start gap-6 flex-col sm:flex-row sm:items-center">
+              <button className="bg-black text-white px-10 sm:px-14 py-3 sm:py-4 rounded-full text-sm sm:text-base font-medium hover:bg-gray-900 transition-colors shadow-md w-full sm:w-auto">
+                Shop Now
+              </button>
+            </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-8 sm:mt-12 lg:mt-16">
-              <div className="flex flex-col">
-                <span className="text-2xl sm:text-3xl lg:text-[40px] font-bold mb-1 sm:mb-2">200+</span>
-                <span className="text-xs sm:text-sm text-gray-600">International Brands</span>
+            <div className="mt-8 sm:mt-12 lg:mt-16">
+              {/* Mobile: two cols for first row, third centered below */}
+              <div className="sm:hidden grid grid-cols-2 gap-x-6 gap-y-4 items-center">
+                <div className="text-center">
+                  <div className="text-2xl font-bold">200+</div>
+                  <div className="text-xs text-gray-600">International Brands</div>
+                </div>
+
+                <div className="text-center border-l border-gray-300 pl-4">
+                  <div className="text-2xl font-bold">2,000+</div>
+                  <div className="text-xs text-gray-600">High-Quality Products</div>
+                </div>
+
+                <div className="col-span-2 text-center mt-2">
+                  <div className="text-2xl font-bold">30,000+</div>
+                  <div className="text-xs text-gray-600">Happy Customers</div>
+                </div>
               </div>
-              <div className="flex flex-col border-l border-gray-300 pl-4 sm:pl-6 lg:pl-8">
-                <span className="text-2xl sm:text-3xl lg:text-[40px] font-bold mb-1 sm:mb-2">2,000+</span>
-                <span className="text-xs sm:text-sm text-gray-600">High-Quality Products</span>
-              </div>
-              <div className="flex flex-col border-l border-gray-300 pl-4 sm:pl-6 lg:pl-8">
-                <span className="text-2xl sm:text-3xl lg:text-[40px] font-bold mb-1 sm:mb-2">30,000+</span>
-                <span className="text-xs sm:text-sm text-gray-600">Happy Customers</span>
+
+              {/* Desktop / tablet: original layout */}
+              <div className="hidden sm:flex flex-col sm:flex-row items-center sm:items-stretch gap-6 sm:gap-8">
+                <div className="flex-1 text-center sm:text-left">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold">200+</div>
+                  <div className="text-xs sm:text-sm text-gray-600">International Brands</div>
+                </div>
+
+                <div className="hidden sm:block w-px bg-gray-300" />
+
+                <div className="flex-1 text-center sm:text-left">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold">2,000+</div>
+                  <div className="text-xs sm:text-sm text-gray-600">High-Quality Products</div>
+                </div>
+
+                <div className="hidden sm:block w-px bg-gray-300" />
+
+                <div className="flex-1 text-center sm:text-left">
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-bold">30,000+</div>
+                  <div className="text-xs sm:text-sm text-gray-600">Happy Customers</div>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Image */}
-          <div className="relative flex items-center justify-center lg:justify-end">
-            <div className="relative w-full max-w-[600px] aspect-[4/3] lg:aspect-auto lg:h-[500px] xl:h-[600px]">
-              {/* Decorative Stars */}
-              <svg 
-                className="absolute top-12 right-8 sm:right-12 lg:right-4 w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20"
-                viewBox="0 0 104 104"
-                fill="none"
-              >
-                <path d="M52 0L56.7553 35.2447L92 40L56.7553 44.7553L52 80L47.2447 44.7553L12 40L47.2447 35.2447L52 0Z" fill="black"/>
-              </svg>
-              
-              <svg 
-                className="absolute top-32 sm:top-40 left-4 sm:left-8 lg:left-0 w-8 h-8 sm:w-12 sm:h-12 lg:w-14 lg:h-14"
-                viewBox="0 0 104 104"
-                fill="none"
-              >
-                <path d="M52 0L56.7553 35.2447L92 40L56.7553 44.7553L52 80L47.2447 44.7553L12 40L47.2447 35.2447L52 0Z" fill="black"/>
-              </svg>
+          {/* Right Image (hidden on mobile/tablet) */}
+          <div className="hidden lg:flex order-2 items-center justify-center lg:justify-end">
+            <div className="relative w-full max-w-[700px] lg:h-[520px] xl:h-[640px]">
+              {/* Decorative shapes */}
+              <div className="absolute -top-6 right-8 hidden lg:block">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-24 lg:h-24 bg-black rounded-full transform rotate-45" style={{clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'}} />
+              </div>
 
-              {/* Placeholder for image - Replace with actual image */}
-              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <p className="text-sm sm:text-base mb-2">Hero Image Placeholder</p>
-                  <p className="text-xs">Add your product image here</p>
-                </div>
+              <div className="absolute top-24 left-6 hidden lg:block">
+                <div className="w-6 h-6 sm:w-10 sm:h-10 bg-black rounded-full transform rotate-45" style={{clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'}} />
+              </div>
+
+              {/* Hero image placeholder - replace with actual image */}
+              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg flex items-end justify-end overflow-hidden">
+                <img src="https://i.ibb.co.com/CyKZj7L/Rectangle-2.png" alt="hero" className="object-cover h-full w-full lg:ml-12 lg:object-right" onError={(e)=>{e.currentTarget.style.display='none'}} />
+                <div className="absolute bottom-0 right-0 w-1/3 h-1/3 bg-transparent" />
               </div>
             </div>
           </div>
