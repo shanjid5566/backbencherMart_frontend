@@ -3,24 +3,18 @@
 // ============================================
 
 import { createAsyncThunk } from '@reduxjs/toolkit'
-// import { DELETE, GET } from '../../services/httpMethods'
-// import { ROUTES_CONFIG } from '../../services/httpEndpoint'
-// import { handleApiError } from '../../utils/errorHandler'
+import apiService from '../../services/apiService'
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
-  async (_, { rejectWithValue }) => {
+  async (params = { page: 1, limit: 4 }, { rejectWithValue }) => {
     try {
-      // Returning mock data for now - Replace with actual API call
-      return { products: [], message: 'Backend not connected' }
-
-      // Uncomment below when backend is ready:
-      // const response = await GET(ROUTES_CONFIG.public.PRODUCTS)
-      // return response
-    // eslint-disable-next-line no-unreachable
+      // Call the backend products endpoint. Adjust path if your backend differs.
+      const res = await apiService.get('/products', { params })
+      // Expecting response shape: { paginated: true, items: [...], meta: {...} }
+      return res
     } catch (err) {
-      // return rejectWithValue(handleApiError(err))
-      return rejectWithValue(err.message || 'Failed to fetch products')
+      return rejectWithValue(err || err.message || 'Failed to fetch products')
     }
   }
 )

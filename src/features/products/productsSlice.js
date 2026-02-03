@@ -28,7 +28,10 @@ const productsSlice = createSlice({
         state.loading = false
         state.success = true
         state.error = null
-        state.list = action.payload.products || []
+        // backend may return `items` or `products` depending on contract
+        state.list = action.payload?.items || action.payload?.products || []
+        // optionally keep pagination meta
+        if (action.payload?.meta) state.meta = action.payload.meta
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false

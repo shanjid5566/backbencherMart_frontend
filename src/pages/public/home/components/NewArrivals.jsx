@@ -1,45 +1,45 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Container from '../../../../components/Container'
 import ProductCard from '../../../../components/ProductCard'
-
-const products = [
-  {
-    id: 1,
-    title: 'T-shirt with Tape Details',
-    price: 120,
-    rating: 4.5,
-    img: 'https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=500',
-  },
-  {
-    id: 2,
-    title: 'Skinny Fit Jeans',
-    price: 240,
-    oldPrice: 260,
-    discount: 20,
-    rating: 3.5,
-    img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500',
-  },
-  {
-    id: 3,
-    title: 'Checkered Shirt',
-    price: 180,
-    rating: 4.5,
-    img: '/assets/product-3.png',
-  },
-  {
-    id: 4,
-    title: 'Sleeve Striped T-shirt',
-    price: 130,
-    oldPrice: 160,
-    discount: 30,
-    rating: 4.5,
-    img: '/assets/product-4.png',
-  },
-]
-
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchProducts } from '../../../../features/products/productsAPI'
+import { selectAllProducts } from '../../../../features/products/productsSlice'
 
 
 const NewArrivals = () => {
+  const dispatch = useDispatch()
+  const products = useSelector(selectAllProducts)
+  const loading = useSelector((state) => state.products.loading)
+  const error = useSelector((state) => state.products.error)
+
+  useEffect(() => {
+    dispatch(fetchProducts({ page: 1, limit: 4 }))
+  }, [dispatch])
+
+  const SkeletonCard = () => (
+    <div className="animate-pulse">
+      <div className="relative w-full aspect-square bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden rounded-sm" />
+
+      <div className="mt-4">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-3" />
+
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="w-4 h-4 bg-gray-200 dark:bg-gray-700 rounded" />
+            ))}
+          </div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12" />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-20" />
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-12" />
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <section className="w-full py-12 lg:py-16">
       <Container>
@@ -47,22 +47,32 @@ const NewArrivals = () => {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold">NEW ARRIVALS</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-          {products.map((p) => (
-            <ProductCard
-              key={p.id}
-              image={p.img}
-              title={p.title}
-              rating={p.rating}
-              price={p.price}
-              oldPrice={p.oldPrice}
-              discount={p.discount}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-8">{error.message || error}</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {products.map((p) => (
+              <ProductCard
+                key={p._id || p.id}
+                image={p.image && p.image.length ? p.image[0] : ''}
+                title={p.name || p.title}
+                rating={p.averageRatings}
+                price={p.price}
+                oldPrice={p.oldPrice}
+                discount={p.discountPercentage || p.discount}
+              />
+            ))}
+          </div>
+        )}
 
         <div className="mt-8 flex justify-center">
-          <button className="px-16 py-3 rounded-2xl border border-gray-300 dark:border-gray-600">View All</button>
+          <button className="px-16 py-3 rounded-2xl border border-gray-300 dark:border-gray-600 cursor-pointer">View All</button>
         </div>
       </Container>
     </section>
