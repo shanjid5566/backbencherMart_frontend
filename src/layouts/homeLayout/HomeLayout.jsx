@@ -4,6 +4,7 @@ import Announcement from '../../components/Announcement'
 import Header from '../../components/Header'
 import useThemeEffect from '../../hooks/useThemeEffect'
 import useSmoothScroll from '../../hooks/useSmoothScroll'
+import Footer from '../../components/Footer'
 
 const HomeLayout = () => {
   // Apply dark class to root element based on Redux state
@@ -19,6 +20,7 @@ const HomeLayout = () => {
         <main>
           <Outlet />
         </main>
+        <Footer />
     </div>
   )
 }
