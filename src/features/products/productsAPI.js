@@ -19,6 +19,20 @@ export const fetchProducts = createAsyncThunk(
   }
 )
 
+  export const fetchTopSelling = createAsyncThunk(
+    'products/fetchTopSelling',
+    async (params = { limit: 4 }, { rejectWithValue }) => {
+      try {
+        // Calls the top-selling endpoint
+        const res = await apiService.get('/products/top', { params })
+        // Expecting response shape: { items: [ { product: {...}, totalQuantity, totalRevenue }, ... ] }
+        return res
+      } catch (err) {
+        return rejectWithValue(err || err.message || 'Failed to fetch top selling')
+      }
+    }
+  )
+
 export const deleteProducts = createAsyncThunk(
   'products/deleteProducts',
   async (_, { rejectWithValue }) => {

@@ -2,18 +2,16 @@ import React, { useEffect } from 'react'
 import Container from '../../../../components/Container'
 import ProductCard from '../../../../components/ProductCard'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchProducts } from '../../../../features/products/productsAPI'
-import { selectAllProducts } from '../../../../features/products/productsSlice'
+import { fetchTopSelling } from '../../../../features/products/productsAPI'
 
-
-const NewArrivals = () => {
+const TopSelling = () => {
   const dispatch = useDispatch()
-  const products = useSelector(selectAllProducts)
-  const loading = useSelector((state) => state.products.loading)
-  const error = useSelector((state) => state.products.error)
+  const list = useSelector((state) => state.products.topSellingList)
+  const loading = useSelector((state) => state.products.topSellingLoading)
+  const error = useSelector((state) => state.products.topSellingError)
 
   useEffect(() => {
-    dispatch(fetchProducts({ page: 1, limit: 4 }))
+    dispatch(fetchTopSelling({ limit: 4 }))
   }, [dispatch])
 
   const SkeletonCard = () => (
@@ -40,11 +38,14 @@ const NewArrivals = () => {
     </div>
   )
 
+  // Ensure we always have an array to map over. Avoid relying on demo data.
+  const productsToShow = Array.isArray(list) ? list : []
+
   return (
     <section className="w-full py-12 lg:py-16">
       <Container>
         <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold">NEW ARRIVALS</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold">TOP SELLING</h2>
         </div>
 
         {loading ? (
@@ -55,17 +56,19 @@ const NewArrivals = () => {
           </div>
         ) : error ? (
           <div className="text-center text-red-500 py-8">{error.message || error}</div>
+        ) : productsToShow.length === 0 ? (
+          <div className="text-center py-8">No top selling products found.</div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            {products.map((p) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {productsToShow.map((p) => (
               <ProductCard
                 key={p._id || p.id}
-                image={p.image && p.image.length ? p.image[0] : ''}
-                title={p.name || p.title}
-                rating={p.averageRatings}
-                price={p.price}
-                oldPrice={p.oldPrice}
-                discount={p.discountPercentage || p.discount}
+                image={(p.image && p.image.length && p.image[0]) || p.product?.image?.[0] || p.image || p.imageUrl}
+                title={p.name || p.title || p.product?.name}
+                rating={p.averageRatings || p.rating || p.product?.averageRatings}
+                price={p.price ?? p.product?.price}
+                oldPrice={p.oldPrice ?? p.product?.oldPrice}
+                discount={p.discountPercentage ?? p.discount ?? p.product?.discountPercentage}
               />
             ))}
           </div>
@@ -79,4 +82,4 @@ const NewArrivals = () => {
   )
 }
 
-export default NewArrivals
+export default TopSelling
