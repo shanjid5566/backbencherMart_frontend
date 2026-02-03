@@ -7,7 +7,7 @@ const Hero = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-12 py-10 sm:py-14 lg:py-20">
           {/* Left Content */}
           <div className="order-1 lg:order-1 flex flex-col justify-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-extrabold leading-tight tracking-tight mb-4 sm:mb-6 lg:mb-8">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-extrabold leading-tight tracking-tight mb-4 sm:mb-6 lg:mb-8 text-center lg:text-left">
               FIND CLOTHES
               <br />
               THAT MATCHES
@@ -15,7 +15,7 @@ const Hero = () => {
               YOUR STYLE
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 max-w-xl">
+            <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 max-w-xl text-center lg:text-left">
               Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.
             </p>
 
