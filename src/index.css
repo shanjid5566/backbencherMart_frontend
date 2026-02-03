@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  /* Primary Color: Black */
+  --color-brand-primary: #000000;
+  
+  /* Secondary Color: 60% Black */
+  --color-brand-secondary: rgba(0, 0, 0, 0.6);
+  
+  /* Accent Color: Your Specified Code (FF3333) */
+  --color-brand-accent: #FF3333; 
+}
+
+/* Base Styles */
+@layer base {
+  body {
+    @apply font-sans text-brand-primary antialiased;
+  }
+}
