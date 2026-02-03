@@ -31,6 +31,7 @@ export default function Reviews() {
   const [index, setIndex] = useState(0)
   const [visible, setVisible] = useState(3)
   const trackRef = useRef(null)
+  const viewportRef = useRef(null)
 
   useEffect(() => {
     const update = () => {
@@ -51,6 +52,18 @@ export default function Reviews() {
 
   const percent = (index * 100) / visible
 
+  useEffect(() => {
+    if (!trackRef.current || !viewportRef.current) return
+    const track = trackRef.current
+    const viewport = viewportRef.current
+    const children = Array.from(track.children)
+    const startIdx = Math.min(index, Math.max(0, children.length - 1))
+    const target = children[startIdx]
+    if (!target) return
+    const left = target.offsetLeft
+    viewport.scrollTo({ left, behavior: 'smooth' })
+  }, [index, visible])
+
   return (
     <section className="w-full pt-12 pb-6 lg:py-16">
       <Container>
@@ -59,15 +72,14 @@ export default function Reviews() {
         </div>
 
         <div className="relative">
-          <div className="overflow-hidden">
+          <div className="overflow-x-auto no-scrollbar" ref={viewportRef}>
             <div
               ref={trackRef}
-              className="flex gap-6 transition-transform duration-400"
-              style={{ transform: `translateX(-${percent}%)` }}
+              className="flex gap-6"
             >
               {reviews.map((r) => (
                 <div key={r.id} className="flex-shrink-0" style={{ width: `${100 / visible}%` }}>
-                  <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-6 shadow-sm mx-2 h-full flex flex-col">
+                  <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-6 shadow-sm h-full flex flex-col">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center text-sm font-semibold text-gray-700 dark:text-gray-200">{r.name.split(' ')[0][0]}</div>
