@@ -42,7 +42,7 @@ const TopSelling = () => {
   const productsToShow = Array.isArray(list) ? list : []
 
   return (
-    <section className="w-full py-12 lg:py-16">
+    <section className="w-full pt-12 pb-6 lg:pt-16 lg:pb-8">
       <Container>
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold">TOP SELLING</h2>
@@ -59,7 +59,7 @@ const TopSelling = () => {
         ) : productsToShow.length === 0 ? (
           <div className="text-center py-8">No top selling products found.</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {productsToShow.map((p) => (
               <ProductCard
                 key={p._id || p.id}

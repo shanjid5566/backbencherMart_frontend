@@ -41,7 +41,7 @@ const NewArrivals = () => {
   )
 
   return (
-    <section className="w-full py-12 lg:py-16">
+    <section className="w-full pt-12 pb-6 lg:pt-16 lg:pb-8">
       <Container>
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold">NEW ARRIVALS</h2>
