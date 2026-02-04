@@ -86,6 +86,9 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+            <Link to="/" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
+              Home
+            </Link>
             <div className="relative group">
               <button className="flex items-center gap-1 text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white transition-colors">
                 Shop <FiChevronDown className="w-4 h-4" />
@@ -127,9 +130,6 @@ const Header = () => {
             </Link>
             <Link to="/new-arrivals" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
               New Arrivals
-            </Link>
-            <Link to="/brands" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
-              Brands
             </Link>
           </nav>
 

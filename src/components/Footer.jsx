@@ -11,17 +11,16 @@ export default function Footer() {
         <Container>
           <div className="mx-auto -mb-30 md:-mb-25 lg:-mb-16"> 
             <div className="bg-black text-white rounded-2xl p-6 md:p-8 shadow-lg relative z-30">
-              <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="text-left max-w-2xl">
                   <h3 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-center lg:text-left">STAY UPTO DATE ABOUT OUR LATEST OFFERS</h3>
                 </div>
 
-                <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-3 ">
-                  <div className="relative w-full sm:w-[360px] bg-gray-200 dark:bg-gray-200 rounded-full">
+                <div className="w-full md:w-auto flex flex-col items-center gap-3">
+                  <div className="relative w-full md:w-[360px] bg-gray-200 dark:bg-gray-200 rounded-full">
                     <input type="email" placeholder="Enter your email address" className="w-full pl-12 pr-4 py-3 rounded-full text-gray-800 " />
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">✉️</div>
                   </div>
-                  <button className="px-6 py-3 rounded-full bg-white text-black font-medium">Subscribe to Newsletter</button>
+                  <button className="w-full md:w-[360px] px-6 py-3 rounded-full bg-white text-black font-medium">Subscribe to Newsletter</button>
                 </div>
               </div>
             </div>
