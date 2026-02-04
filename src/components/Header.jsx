@@ -83,6 +83,12 @@ const Header = () => {
                 <div className="border-t dark:border-gray-700" />
                 <ul className="py-1">
                   <li>
+                    <a href="/shop/men" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Men</a>
+                  </li>
+                  <li>
+                    <a href="/shop/women" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Women</a>
+                  </li>
+                  <li>
                     <a href="/shop/casual" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Casual</a>
                   </li>
                   <li>
@@ -178,7 +184,17 @@ const Header = () => {
             mobileOpen ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
           }`}
         >
-          <div className="mx-auto px-6 py-6">
+          <div
+            className="mx-auto px-6 py-6"
+            style={{
+              maxHeight: 'calc(100vh - 4rem)',
+              overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              overscrollBehavior: 'contain',
+            }}
+            onWheel={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between">
               <Link to="/" onClick={closeMenu} className="text-2xl font-bold dark:text-white">
                 BackBanchers Shop
@@ -204,13 +220,15 @@ const Header = () => {
                   <FiChevronDown className={`w-5 h-5 transition-transform ${mobileShopOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                <div className={`mt-2 pl-0 border-l border-transparent overflow-hidden transition-all ${mobileShopOpen ? 'max-h-56' : 'max-h-0'}`}>
+                <div className={`mt-2 pl-0 border-l border-transparent transition-all ${mobileShopOpen ? 'max-h-96 overflow-y-auto' : 'max-h-0 overflow-hidden'}`}>
                   <div className="bg-gradient-to-r from-white to-gray-50 dark:from-gray-800 dark:to-gray-700 rounded-md p-3 ring-1 ring-black/5 dark:ring-white/10">
                     <Link to="/shop" onClick={closeMenu} className="flex items-center gap-2 py-2 px-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-600 font-semibold dark:text-white">
                       <FiGrid className="w-4 h-4" />
                       Show All
                     </Link>
                     <div className="mt-2 border-t dark:border-gray-600 pt-2">
+                      <Link to="/shop/men" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Men</Link>
+                      <Link to="/shop/women" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Women</Link>
                       <Link to="/shop/casual" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Casual</Link>
                       <Link to="/shop/formal" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Formal</Link>
                       <Link to="/shop/party" onClick={closeMenu} className="block py-2 px-2 hover:bg-white dark:hover:bg-gray-600 dark:text-gray-200">Party</Link>
