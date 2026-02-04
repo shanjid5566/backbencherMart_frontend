@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { FiMoreVertical } from "react-icons/fi";
 import { reviews as mockReviews } from "../../../../data/productData";
+import ReviewModal from "./ReviewModal";
 
 const ProductTabs = ({ totalReviews }) => {
   const [activeTab, setActiveTab] = useState("reviews");
   const [sortBy, setSortBy] = useState("latest");
+  const [showModal, setShowModal] = useState(false);
+  const [reviews, setReviews] = useState(mockReviews);
 
   const tabs = [
     { id: "reviews", label: "Rating & Reviews" },
@@ -82,7 +85,10 @@ const ProductTabs = ({ totalReviews }) => {
                 <option value="highest">Highest Rating</option>
                 <option value="lowest">Lowest Rating</option>
               </select>
-              <button className="px-4 sm:px-6 py-2 sm:py-3 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm sm:text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
+              <button
+                onClick={() => setShowModal(true)}
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-black dark:bg-white text-white dark:text-black rounded-full text-sm sm:text-base font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+              >
                 Write a Review
               </button>
             </div>
@@ -90,7 +96,7 @@ const ProductTabs = ({ totalReviews }) => {
 
           {/* Reviews Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-            {mockReviews.map((review) => (
+            {reviews.map((review) => (
               <div
                 key={review.id}
                 className="p-5 sm:p-6 border dark:border-gray-700 rounded-2xl hover:shadow-md dark:hover:shadow-gray-800/50 transition-shadow"
@@ -134,6 +140,15 @@ const ProductTabs = ({ totalReviews }) => {
               Load More Reviews
             </button>
           </div>
+          {showModal && (
+            <ReviewModal
+              onClose={() => setShowModal(false)}
+              onSubmit={(newReview) => {
+                setReviews((r) => [newReview, ...r]);
+                setShowModal(false);
+              }}
+            />
+          )}
         </div>
       )}
 
