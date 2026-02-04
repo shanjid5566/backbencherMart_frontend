@@ -2,6 +2,9 @@ import axios from 'axios'
 
 const baseURL = import.meta.env.VITE_API_BASE_URL || ''
 
+console.log('API Base URL:', baseURL)
+console.log('Environment:', import.meta.env.VITE_API_BASE_URL)
+
 const apiClient = axios.create({
   baseURL,
   timeout: 15000,
@@ -29,7 +32,8 @@ const processQueue = (error, token = null) => {
 apiClient.interceptors.request.use(
   (config) => {
     try {
-      const token = localStorage.getItem('authToken')
+      // support both `token` (used by authSlice) and `authToken` (older key)
+      const token = localStorage.getItem('token') || localStorage.getItem('authToken')
       if (token) {
         config.headers = config.headers || {}
         config.headers.Authorization = `Bearer ${token}`
@@ -96,13 +100,16 @@ apiClient.interceptors.response.use(
 
 export function setAuthToken(token) {
   if (token) {
+    // persist under both keys for compatibility
     localStorage.setItem('authToken', token)
+    localStorage.setItem('token', token)
     apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
 }
 
 export function clearAuthToken() {
   localStorage.removeItem('authToken')
+  localStorage.removeItem('token')
   localStorage.removeItem('refreshToken')
   delete apiClient.defaults.headers.common['Authorization']
 }

@@ -5,6 +5,7 @@ import { cartApi } from '../features/cart/cartApi'
 import cartReducer from '../features/cart/cartSlice'
 import productsReducer from '../features/products/productsSlice'
 import themeReducer from '../features/theme/themeSlice'
+import authReducer from '../features/authentication/authSlice'
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
     products: productsReducer,
     cart: cartReducer,
     theme: themeReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(apiSlice.middleware, cartApi.middleware),

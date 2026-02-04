@@ -2,12 +2,19 @@ import { Route, Routes } from "react-router";
 import HomeLayout from "./layouts/homeLayout/HomeLayout";
 import HomePage from "./pages/HomePage";
 import ProductDetailsPage from "./pages/public/product-details/ProductDetailsPage";
+import LoginPage from "./pages/public/auth/Login";
+import RegisterPage from "./pages/public/auth/Register";
+import VerifyOtpPage from "./pages/public/auth/VerifyOtp";
 
 function App() {
 
   return (
     <>
       <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-otp" element={<VerifyOtpPage />} />
+
         <Route path="/" element={<HomeLayout />}>
           <Route index element={<HomePage />} />
           <Route path="product/:productId" element={<ProductDetailsPage />} />

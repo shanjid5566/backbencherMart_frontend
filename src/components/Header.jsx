@@ -23,6 +23,25 @@ const Header = () => {
   const dispatch = useDispatch();
   const isDarkMode = useSelector(selectIsDarkMode);
 
+  // Local auth state (fallback to localStorage so header works before reducer is added)
+  const [authUser, setAuthUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user'))
+    } catch (e) {
+      return null
+    }
+  })
+  const [authToken, setAuthToken] = useState(() => localStorage.getItem('token'))
+
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === 'user') setAuthUser(e.newValue ? JSON.parse(e.newValue) : null)
+      if (e.key === 'token') setAuthToken(e.newValue)
+    }
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
+
   const closeMenu = useCallback(() => {
     setMobileOpen(false);
   }, []);
@@ -143,9 +162,15 @@ const Header = () => {
             <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
               <FiShoppingCart className="w-6 h-6" />
             </button>
-            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
-              <FiUser className="w-6 h-6" />
-            </button>
+            {(!authUser && !authToken) ? (
+              <Link to="/login" className="hidden lg:inline-flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm font-medium">
+                Log in
+              </Link>
+            ) : (
+              <Link to="/account" className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                <FiUser className="w-6 h-6" />
+              </Link>
+            )}
             <button
               aria-label="Toggle menu"
               aria-expanded={mobileOpen}
@@ -243,9 +268,15 @@ const Header = () => {
               <button className="flex-1 py-3 bg-black dark:bg-white dark:text-black text-white rounded-md transition-colors">
                 View Cart
               </button>
-              <button className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white transition-colors">
-                Account
-              </button>
+              {(!authUser && !authToken) ? (
+                <Link to="/login" onClick={closeMenu} className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white text-center transition-colors">
+                  Log in
+                </Link>
+              ) : (
+                <Link to="/account" onClick={closeMenu} className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white text-center transition-colors">
+                  Account
+                </Link>
+              )}
             </div>
           </div>
         </div>
