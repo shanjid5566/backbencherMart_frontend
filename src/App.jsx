@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router";
 import HomeLayout from "./layouts/homeLayout/HomeLayout";
 import HomePage from "./pages/HomePage";
 import ProductDetailsPage from "./pages/public/product-details/ProductDetailsPage";
+import ProductsPage from "./pages/public/ProductsPage";
 import LoginPage from "./pages/public/auth/Login";
 import RegisterPage from "./pages/public/auth/Register";
 import VerifyOtpPage from "./pages/public/auth/VerifyOtp";
@@ -18,6 +19,8 @@ function App() {
         <Route path="/" element={<HomeLayout />}>
           <Route index element={<HomePage />} />
           <Route path="product/:productId" element={<ProductDetailsPage />} />
+          <Route path="shop" element={<ProductsPage />} />
+          <Route path="shop/:category" element={<ProductsPage />} />
         </Route>
       </Routes>
     </>

@@ -94,30 +94,30 @@ const Header = () => {
               {/* Desktop dropdown */}
               <div className="absolute left-0 top-full mt-2 w-48 bg-gradient-to-b from-white to-gray-50 dark:from-dark-surface dark:to-gray-800 shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transform translate-y-1 group-hover:translate-y-0 transition-all ring-1 ring-black/5 dark:ring-white/10">
                 <div className="px-3 py-2">
-                  <a href="/shop" className="flex items-center gap-2 px-2 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
+                  <Link to="/shop" className="flex items-center gap-2 px-2 py-2 rounded-md text-sm font-semibold hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white">
                     <FiGrid className="w-4 h-4" />
                     Show All
-                  </a>
+                  </Link>
                 </div>
                 <div className="border-t dark:border-gray-700" />
                 <ul className="py-1">
                   <li>
-                    <a href="/shop/men" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Men</a>
+                    <Link to="/shop/men" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Men</Link>
                   </li>
                   <li>
-                    <a href="/shop/women" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Women</a>
+                    <Link to="/shop/women" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Women</Link>
                   </li>
                   <li>
-                    <a href="/shop/casual" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Casual</a>
+                    <Link to="/shop/casual" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Casual</Link>
                   </li>
                   <li>
-                    <a href="/shop/formal" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Formal</a>
+                    <Link to="/shop/formal" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Formal</Link>
                   </li>
                   <li>
-                    <a href="/shop/party" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Party</a>
+                    <Link to="/shop/party" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Party</Link>
                   </li>
                   <li>
-                    <a href="/shop/gym" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Gym</a>
+                    <Link to="/shop/gym" className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200">Gym</Link>
                   </li>
                 </ul>
               </div>
