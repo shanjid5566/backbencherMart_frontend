@@ -6,6 +6,7 @@ import Container from '../../components/Container';
 import Breadcrumb from '../../components/Breadcrumb';
 import FilterSidebar from '../../components/FilterSidebar';
 import CatalogProductCard from '../../components/CatalogProductCard';
+import { dressStyles } from '../../data/catalogData';
 import { fetchProducts } from '../../features/products/productsAPI';
 import {
   selectProducts,
@@ -124,10 +125,22 @@ const ProductsPage = () => {
   // Handle URL category param changes
   useEffect(() => {
     if (category) {
-      // Use functional state updates
+      // Determine whether the route param refers to a dress style or a category
       React.startTransition(() => {
-        setFilters(prev => ({ ...prev, category }));
-        setAppliedFilters(prev => ({ ...prev, category }));
+        const isStyle = dressStyles.some(d => d.id === category);
+
+        if (isStyle) {
+          // route is a dress style (casual/formal/party/gym)
+          setFilters(prev => ({ ...prev, style: category, category: null }));
+          setAppliedFilters(prev => ({ ...prev, style: category, category: null }));
+        } else {
+          // treat as category slug; try to map or fall back to capitalized string
+          const mapped = CATEGORY_MAP[category];
+          const fallback = category.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+          setFilters(prev => ({ ...prev, category }));
+          setAppliedFilters(prev => ({ ...prev, category: mapped || fallback, style: null }));
+        }
+
         setCurrentPage(1);
       });
     }
