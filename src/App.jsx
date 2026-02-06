@@ -6,6 +6,7 @@ import ProductsPage from "./pages/public/ProductsPage";
 import LoginPage from "./pages/public/auth/Login";
 import RegisterPage from "./pages/public/auth/Register";
 import VerifyOtpPage from "./pages/public/auth/VerifyOtp";
+import NotFound from "./pages/NotFound";
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="product/:productId" element={<ProductDetailsPage />} />
           <Route path="shop" element={<ProductsPage />} />
           <Route path="shop/:category" element={<ProductsPage />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </>
