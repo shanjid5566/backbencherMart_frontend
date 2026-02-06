@@ -1,11 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { fetchProducts, deleteProducts, fetchTopSelling } from './productsAPI'
+import { fetchProducts, fetchAllProducts, deleteProducts, fetchTopSelling } from './productsAPI'
 
 const initialState = {
   list: [],
+  allProducts: [],
+  meta: null,
   success: null,
   error: null,
   loading: false,
+  allProductsLoading: false,
+  allProductsError: null,
   topSellingList: [],
   topSellingLoading: false,
   topSellingError: null,
@@ -42,6 +46,21 @@ const productsSlice = createSlice({
         state.error = action.payload || 'Failed to fetch products'
       })
 
+      // Fetch all products
+      .addCase(fetchAllProducts.pending, (state) => {
+        state.allProductsLoading = true
+        state.allProductsError = null
+      })
+      .addCase(fetchAllProducts.fulfilled, (state, action) => {
+        state.allProductsLoading = false
+        state.allProductsError = null
+        state.allProducts = action.payload?.items || []
+      })
+      .addCase(fetchAllProducts.rejected, (state, action) => {
+        state.allProductsLoading = false
+        state.allProductsError = action.payload || 'Failed to fetch all products'
+      })
+
       // Top selling
       .addCase(fetchTopSelling.pending, (state) => {
         state.topSellingLoading = true
@@ -49,9 +68,8 @@ const productsSlice = createSlice({
       })
       .addCase(fetchTopSelling.fulfilled, (state, action) => {
         state.topSellingLoading = false
-        // payload expected: { items: [ { product: {...}, ... }, ... ] }
-        const items = action.payload?.items || []
-        state.topSellingList = items.map((it) => it.product || it)
+        // payload expected: { items: [...] }
+        state.topSellingList = action.payload?.items || []
       })
       .addCase(fetchTopSelling.rejected, (state, action) => {
         state.topSellingLoading = false
@@ -79,5 +97,12 @@ const productsSlice = createSlice({
 export const { resetProductsError, resetProducts } = productsSlice.actions
 
 // Selectors
-export const selectAllProducts = (state) => state.products.list
+export const selectProducts = (state) => state.products.list
+export const selectAllProducts = (state) => state.products.allProducts
+export const selectProductsMeta = (state) => state.products.meta
+export const selectProductsLoading = (state) => state.products.loading
+export const selectAllProductsLoading = (state) => state.products.allProductsLoading
+export const selectTopSellingProducts = (state) => state.products.topSellingList
+export const selectTopSellingLoading = (state) => state.products.topSellingLoading
+export const selectProductsError = (state) => state.products.error
 export default productsSlice.reducer

@@ -14,7 +14,7 @@ const FilterSidebar = ({ filters, onFilterChange, onClose, isMobile }) => {
   // Local temp filters for mobile drawer — only apply when user clicks Apply
   const defaultLocalFilters = {
     category: null,
-    priceRange: { min: 0, max: 300 },
+    priceRange: { min: 0, max: 20000 },
     colors: [],
     sizes: [],
     style: null
@@ -284,7 +284,8 @@ const FilterSidebar = ({ filters, onFilterChange, onClose, isMobile }) => {
                     <input
                       type="range"
                       min="0"
-                      max="300"
+                      max="20000"
+                      step="100"
                       value={activeFilters.priceRange.max}
                       onChange={(e) => handlePriceChange('max', e.target.value)}
                       className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-black dark:accent-white"

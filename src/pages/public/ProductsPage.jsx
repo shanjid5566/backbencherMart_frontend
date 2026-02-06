@@ -1,74 +1,218 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
 import { FiSliders, FiChevronDown } from 'react-icons/fi';
 import Container from '../../components/Container';
 import Breadcrumb from '../../components/Breadcrumb';
 import FilterSidebar from '../../components/FilterSidebar';
 import CatalogProductCard from '../../components/CatalogProductCard';
-import { catalogProducts } from '../../data/catalogData';
+import { fetchProducts } from '../../features/products/productsAPI';
+import {
+  selectProducts,
+  selectProductsMeta,
+  selectProductsLoading,
+  selectProductsError
+} from '../../features/products/productsSlice';
+
+// Map sidebar filter IDs to API query parameter values
+const CATEGORY_MAP = {
+  't-shirts': 'T-Shirts',
+  'shorts': 'Shorts',
+  'shirts': 'Shirts',
+  'hoodie': 'Hoodies',
+  'jeans': 'Jeans'
+};
+
+const COLOR_MAP = {
+  'green': 'Green',
+  'red': 'Red',
+  'yellow': 'Yellow',
+  'orange': 'Orange',
+  'cyan': 'Cyan',
+  'blue': 'Blue',
+  'purple': 'Purple',
+  'pink': 'Pink',
+  'white': 'White',
+  'black': 'Black'
+};
+
+const SIZE_MAP = {
+  'xx-small': 'XXS',
+  'x-small': 'XS',
+  'small': 'S',
+  'medium': 'M',
+  'large': 'L',
+  'x-large': 'XL',
+  'xx-large': 'XXL',
+  '3x-large': '3XL',
+  '4x-large': '4XL'
+};
 
 const ProductsPage = () => {
   const { category } = useParams();
+  const dispatch = useDispatch();
+  
+  // Redux selectors
+  const products = useSelector(selectProducts);
+  const meta = useSelector(selectProductsMeta);
+  const loading = useSelector(selectProductsLoading);
+  const error = useSelector(selectProductsError);
+  
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('most-popular');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
+  // Filters state used by the FilterSidebar UI
   const [filters, setFilters] = useState({
     category: category || null,
-    priceRange: { min: 0, max: 300 },
+    priceRange: { min: 0, max: 20000 },
     colors: [],
     sizes: [],
     style: null
   });
 
+  // Applied filters — these are what actually get sent to the API
+  const [appliedFilters, setAppliedFilters] = useState({
+    category: category || null,
+    style: null,
+    colors: [],
+    sizes: [],
+    priceRange: { min: 0, max: 20000 }
+  });
+
+  // Check if any client-side filters are active (colors, sizes, price)
+  const hasClientFilters = (
+    (appliedFilters.colors && appliedFilters.colors.length > 0) ||
+    (appliedFilters.sizes && appliedFilters.sizes.length > 0) ||
+    (appliedFilters.priceRange && (
+      appliedFilters.priceRange.min > 0 ||
+      appliedFilters.priceRange.max < 20000
+    ))
+  );
+
+  // Fetch products when page, appliedFilters, or sortBy changes
+  useEffect(() => {
+    const params = {};
+
+    // Server-side filters — category & dressStyle
+    if (appliedFilters.category) {
+      params.category = CATEGORY_MAP[appliedFilters.category] || appliedFilters.category;
+    }
+    if (appliedFilters.style) {
+      params.dressStyle = appliedFilters.style.charAt(0).toUpperCase() + appliedFilters.style.slice(1);
+    }
+
+    // Sorting (always server-side)
+    if (sortBy === 'price-low') params.sort = 'price';
+    else if (sortBy === 'price-high') params.sort = '-price';
+    else if (sortBy === 'rating') params.sort = '-averageRatings';
+
+    // If client-side filters are active, fetch ALL products (high limit)
+    // so we can filter the full set client-side
+    if (hasClientFilters) {
+      params.limit = 1000; // large enough to get all products
+      dispatch(fetchProducts(params));
+    } else {
+      // No client-side filters — use server-side pagination
+      params.page = currentPage;
+      params.limit = itemsPerPage;
+      dispatch(fetchProducts(params));
+    }
+  }, [dispatch, currentPage, appliedFilters, sortBy, hasClientFilters]);
+
+  // Handle URL category param changes
   useEffect(() => {
     if (category) {
-      setFilters(prev => ({ ...prev, category }));
+      // Use functional state updates
+      React.startTransition(() => {
+        setFilters(prev => ({ ...prev, category }));
+        setAppliedFilters(prev => ({ ...prev, category }));
+        setCurrentPage(1);
+      });
     }
   }, [category]);
 
+  // Ref to accumulate filter changes from applyFilters() which calls onFilterChange 5 times
+  const pendingRef = React.useRef({});
+
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value
-    }));
-    setCurrentPage(1);
+    // Accumulate each key/value into the ref
+    pendingRef.current[key] = value;
+
+    // applyFilters() calls: category → colors → sizes → style → priceRange
+    // priceRange is always the LAST call, so we apply everything at that point
+    if (key === 'priceRange') {
+      const batch = { ...pendingRef.current };
+      pendingRef.current = {};
+
+      // Update sidebar UI filters
+      setFilters(prev => ({ ...prev, ...batch }));
+
+      // Update applied filters — send ALL to the API
+      setAppliedFilters({
+        category: batch.category ?? null,
+        style: batch.style ?? null,
+        colors: batch.colors ?? [],
+        sizes: batch.sizes ?? [],
+        priceRange: batch.priceRange ?? { min: 0, max: 20000 },
+      });
+
+      setCurrentPage(1);
+    }
   };
 
-  // Filter products
-  const filteredProducts = catalogProducts.filter(product => {
-    const categoryMatch = !filters.category || product.category === filters.category;
-    const priceMatch = product.price >= filters.priceRange.min && product.price <= filters.priceRange.max;
-    const colorMatch = filters.colors.length === 0 || product.colors.some(c => filters.colors.includes(c));
-    const sizeMatch = filters.sizes.length === 0 || product.sizes.some(s => filters.sizes.includes(s));
-    const styleMatch = !filters.style || product.style === filters.style;
-    
-    return categoryMatch && priceMatch && colorMatch && sizeMatch && styleMatch;
-  });
+  // Client-side filtering for colors, sizes, and price (API doesn't support these)
+  const filteredProducts = React.useMemo(() => {
+    if (!hasClientFilters) return products;
 
-  // Sort products
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    switch (sortBy) {
-      case 'price-low':
-        return a.price - b.price;
-      case 'price-high':
-        return b.price - a.price;
-      case 'rating':
-        return b.rating - a.rating;
-      default:
-        return 0;
-    }
-  });
+    return products.filter(product => {
+      // Color filter — map sidebar IDs to API color names and check
+      if (appliedFilters.colors && appliedFilters.colors.length > 0) {
+        const apiColors = appliedFilters.colors.map(c => (COLOR_MAP[c] || c).toLowerCase());
+        const productColors = (product.colors || []).map(c => c.toLowerCase());
+        const colorMatch = apiColors.some(c => productColors.includes(c));
+        if (!colorMatch) return false;
+      }
 
-  // Pagination
-  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedProducts = sortedProducts.slice(startIndex, startIndex + itemsPerPage);
+      // Size filter — map sidebar IDs to API size abbreviations and check
+      if (appliedFilters.sizes && appliedFilters.sizes.length > 0) {
+        const apiSizes = appliedFilters.sizes.map(s => (SIZE_MAP[s] || s).toUpperCase());
+        const productSizes = (product.sizes || []).map(s => s.toUpperCase());
+        const sizeMatch = apiSizes.some(s => productSizes.includes(s));
+        if (!sizeMatch) return false;
+      }
+
+      // Price filter
+      if (appliedFilters.priceRange) {
+        if (appliedFilters.priceRange.min > 0 && product.price < appliedFilters.priceRange.min) return false;
+        if (appliedFilters.priceRange.max < 20000 && product.price > appliedFilters.priceRange.max) return false;
+      }
+
+      return true;
+    });
+  }, [products, appliedFilters, hasClientFilters]);
+
+  // Pagination: client-side when filters active, server-side otherwise
+  const totalFilteredItems = filteredProducts.length;
+  const totalPages = hasClientFilters
+    ? Math.ceil(totalFilteredItems / itemsPerPage) || 1
+    : (meta?.totalPages || 1);
+  const totalItems = hasClientFilters
+    ? totalFilteredItems
+    : (meta?.totalItems || products.length);
+  const paginatedProducts = hasClientFilters
+    ? filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : filteredProducts;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Retry fetch on error
+  const handleRetry = () => {
+    dispatch(fetchProducts({ page: currentPage, limit: itemsPerPage }));
   };
 
   const renderPagination = () => {
@@ -98,7 +242,32 @@ const ProductsPage = () => {
         <div className="py-6">
           <Breadcrumb category={filters.category} />
 
-          <div className="flex flex-col lg:flex-row gap-6">
+          {/* Loading State */}
+          {loading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black dark:border-white"></div>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && (
+            <div className="flex justify-center items-center py-12">
+              <div className="text-red-600 dark:text-red-400 text-center">
+                <p className="text-lg font-semibold mb-2">Error loading products</p>
+                <p>{error}</p>
+                <button 
+                  onClick={handleRetry}
+                  className="mt-4 px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded-lg hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Main Content */}
+          {!loading && !error && (
+            <div className="flex flex-col lg:flex-row gap-6">
             {/* Filters Sidebar - Desktop */}
             <div className="hidden lg:block lg:w-96 flex-shrink-0 lg:sticky lg:top-30 lg:self-start">
               <div className="bg-white dark:bg-dark-surface rounded-2xl border border-gray-200 dark:border-gray-700 p-6">
@@ -136,10 +305,12 @@ const ProductsPage = () => {
               <div className="flex items-center justify-between gap-4 mb-6">
                 <div className="flex-1">
                   <h1 className="text-2xl sm:text-3xl font-bold capitalize dark:text-white mb-1">
-                    {filters.category || 'All Products'}
+                    {filters.style || filters.category || 'All Products'}
                   </h1>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Showing {startIndex + 1}-{Math.min(startIndex + itemsPerPage, sortedProducts.length)} of {sortedProducts.length} Products
+                    {totalItems > 0
+                      ? `Showing ${((currentPage - 1) * itemsPerPage) + 1}-${Math.min(currentPage * itemsPerPage, totalItems)} of ${totalItems} Products`
+                      : `Showing 0 Products`}
                   </p>
                 </div>
                 
@@ -171,11 +342,49 @@ const ProductsPage = () => {
               </div>
 
               {/* Products Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-8 mb-8">
-                {paginatedProducts.map((product) => (
-                  <CatalogProductCard key={product.id} product={product} />
-                ))}
-              </div>
+              {paginatedProducts.length === 0 ? (
+                <div className="min-h-[240px] flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 p-8 mb-8">
+                  <p className="text-lg font-semibold dark:text-white mb-2">No products found</p>
+                  <p className="text-sm text-gray-400 mb-4">Try removing some filters or clear all filters to see more products.</p>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => {
+                        // clear filters
+                        const defaults = { category: category || null, priceRange: { min: 0, max: 20000 }, colors: [], sizes: [], style: null };
+                        setFilters(defaults);
+                        setAppliedFilters({ category: defaults.category, style: null, colors: [], sizes: [], priceRange: defaults.priceRange });
+                        setCurrentPage(1);
+                      }}
+                      className="px-6 py-2 bg-black text-white rounded-full hover:bg-gray-800"
+                    >
+                      Clear filters
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 lg:gap-8 mb-8">
+                  {paginatedProducts.map((product) => (
+                    <CatalogProductCard 
+                      key={product._id} 
+                      product={{
+                        id: product._id,
+                        name: product.name,
+                        price: product.price,
+                        oldPrice: product.oldPrice,
+                        discount: product.discountPercentage,
+                        image: product.image[0],
+                        rating: product.averageRatings || 0,
+                        reviews: product.totalReviews || 0,
+                        category: product.category,
+                        colors: product.colors,
+                        sizes: product.sizes,
+                        inStock: product.inStock,
+                        description: product.description
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
 
               {/* Pagination */}
               {totalPages > 1 && (
@@ -217,7 +426,8 @@ const ProductsPage = () => {
                 </div>
               )}
             </div>
-          </div>
+            </div>
+          )}
         </div>
       </Container>
     </div>

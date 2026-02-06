@@ -3,11 +3,15 @@ import Container from '../../../../components/Container'
 import ProductCard from '../../../../components/ProductCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchTopSelling } from '../../../../features/products/productsAPI'
+import {
+  selectTopSellingProducts,
+  selectTopSellingLoading
+} from '../../../../features/products/productsSlice'
 
 const TopSelling = () => {
   const dispatch = useDispatch()
-  const list = useSelector((state) => state.products.topSellingList)
-  const loading = useSelector((state) => state.products.topSellingLoading)
+  const list = useSelector(selectTopSellingProducts)
+  const loading = useSelector(selectTopSellingLoading)
   const error = useSelector((state) => state.products.topSellingError)
 
   useEffect(() => {

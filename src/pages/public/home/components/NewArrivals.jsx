@@ -3,14 +3,18 @@ import Container from '../../../../components/Container'
 import ProductCard from '../../../../components/ProductCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProducts } from '../../../../features/products/productsAPI'
-import { selectAllProducts } from '../../../../features/products/productsSlice'
+import { 
+  selectProducts,
+  selectProductsLoading, 
+  selectProductsError 
+} from '../../../../features/products/productsSlice'
 
 
 const NewArrivals = () => {
   const dispatch = useDispatch()
-  const products = useSelector(selectAllProducts)
-  const loading = useSelector((state) => state.products.loading)
-  const error = useSelector((state) => state.products.error)
+  const products = useSelector(selectProducts)
+  const loading = useSelector(selectProductsLoading)
+  const error = useSelector(selectProductsError)
 
   useEffect(() => {
     dispatch(fetchProducts({ page: 1, limit: 4 }))
