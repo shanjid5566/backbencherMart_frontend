@@ -49,51 +49,8 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config
-    if (!originalRequest) return Promise.reject(error)
-
-    const status = error.response ? error.response.status : null
-
-    // Attempt refresh flow on 401
-    if (status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true
-
-      if (isRefreshing) {
-        return new Promise(function (resolve, reject) {
-          failedQueue.push({ resolve, reject })
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = 'Bearer ' + token
-            return apiClient(originalRequest)
-          })
-          .catch((err) => Promise.reject(err))
-      }
-
-      isRefreshing = true
-      const refreshToken = localStorage.getItem('refreshToken')
-
-      try {
-        // NOTE: adapt refresh endpoint to your backend
-        const resp = await axios.post(`${baseURL}/auth/refresh`, { refreshToken })
-        const { authToken: newToken, refreshToken: newRefresh } = resp.data
-        localStorage.setItem('authToken', newToken)
-        if (newRefresh) localStorage.setItem('refreshToken', newRefresh)
-        apiClient.defaults.headers.common['Authorization'] = 'Bearer ' + newToken
-        processQueue(null, newToken)
-        isRefreshing = false
-        originalRequest.headers.Authorization = 'Bearer ' + newToken
-        return apiClient(originalRequest)
-      } catch (err) {
-        processQueue(err, null)
-        isRefreshing = false
-        // optional: clear stored tokens and redirect to login
-        localStorage.removeItem('authToken')
-        localStorage.removeItem('refreshToken')
-        // window.location.href = '/login'
-        return Promise.reject(err)
-      }
-    }
-
+    // Token refresh disabled since /auth/refresh endpoint is not available
+    // If backend adds refresh support, uncomment and adapt the interceptor below
     return Promise.reject(error)
   }
 )

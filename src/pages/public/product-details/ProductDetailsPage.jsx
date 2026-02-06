@@ -127,7 +127,7 @@ const ProductDetailsPage = () => {
           </div>
 
           {/* Tabs Section */}
-          <ProductTabs totalReviews={product.totalReviews} />
+          <ProductTabs productId={product.id} totalReviews={product.totalReviews} />
 
           {/* Related Products */}
           <RelatedProducts products={relatedProducts} />

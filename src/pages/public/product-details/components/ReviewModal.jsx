@@ -14,7 +14,7 @@ const Star = ({ filled, onClick, onMouseEnter, onMouseLeave }) => (
   </button>
 );
 
-const ReviewModal = ({ onClose, onSubmit }) => {
+const ReviewModal = ({ onClose, onSubmit, submitting = false }) => {
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(null);
   const [name, setName] = useState("");
@@ -107,9 +107,10 @@ const ReviewModal = ({ onClose, onSubmit }) => {
             </button>
             <button
               type="submit"
-              className="w-full sm:w-auto px-6 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm sm:text-base shadow-lg transform-gpu transition-all hover:scale-[1.02] active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400/25"
+              disabled={submitting}
+              className={`w-full sm:w-auto px-6 py-3 rounded-full ${submitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'} text-white font-semibold text-sm sm:text-base shadow-lg transform-gpu transition-all hover:scale-[1.02] active:scale-95 focus:outline-none focus:ring-4 focus:ring-indigo-400/25`}
             >
-              Submit Review
+              {submitting ? 'Submitting...' : 'Submit Review'}
             </button>
           </div>
         </div>
