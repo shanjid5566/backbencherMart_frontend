@@ -125,9 +125,6 @@ const Header = () => {
                 </ul>
               </div>
             </div>
-            <Link to="/on-sale" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
-              On Sale
-            </Link>
             <Link to="/new-arrivals" className="text-base hover:text-gray-600 dark:text-gray-200 dark:hover:text-white">
               New Arrivals
             </Link>
@@ -231,7 +228,6 @@ const Header = () => {
 
             <nav className="mt-6 flex flex-col gap-4">
               <Link to="/" onClick={closeMenu} className="text-lg dark:text-gray-200">Home</Link>
-              <Link to="/on-sale" onClick={closeMenu} className="text-lg dark:text-gray-200">On Sale</Link>
               <Link to="/new-arrivals" onClick={closeMenu} className="text-lg dark:text-gray-200">New Arrivals</Link>
               <Link to="/brands" onClick={closeMenu} className="text-lg dark:text-gray-200">Brands</Link>
 
