@@ -1,3 +1,6 @@
+import React from 'react'
+import { Link } from 'react-router'
+
 export default function ProductCard({
   image,
   title,
@@ -7,22 +10,17 @@ export default function ProductCard({
   discount,
   featured = false,
   onClick,
+  productId,
 }) {
   const fullStars = Math.floor(rating);
-
-  return (
-    <div
-      onClick={onClick}
-      className={`cursor-pointer ${featured ? "ring-2 ring-red-300" : ""}`}
-    >
+  const content = (
+    <div className={`cursor-pointer ${featured ? 'ring-2 ring-red-300' : ''}`} onClick={onClick}>
       <div className="relative w-full aspect-square bg-[#F0EEED] dark:bg-[#374151] flex items-center justify-center overflow-hidden">
         <img
           src={image}
           alt={title}
           className="object-cover h-full w-full rounded-sm"
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-          }}
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
         />
       </div>
 
@@ -36,7 +34,7 @@ export default function ProductCard({
             {Array.from({ length: 5 }).map((_, i) => (
               <svg
                 key={i}
-                className={`w-[18px] h-[18px] ${i < fullStars ? "text-[#FFC633]" : "text-gray-300 dark:text-gray-600"}`}
+                className={`w-[18px] h-[18px] ${i < fullStars ? 'text-[#FFC633]' : 'text-gray-300 dark:text-gray-600'}`}
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -51,23 +49,25 @@ export default function ProductCard({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-2xl font-bold text-gray-900 dark:text-white">
-            ${price}
-          </span>
+          <span className="text-2xl font-bold text-gray-900 dark:text-white">${price}</span>
           {oldPrice && (
             <>
-              <span className="text-2xl font-bold text-gray-400 dark:text-gray-500 line-through">
-                ${oldPrice}
-              </span>
+              <span className="text-2xl font-bold text-gray-400 dark:text-gray-500 line-through">${oldPrice}</span>
               {discount && (
-                <span className="text-xs bg-[#FF33331A] text-[#FF3333] px-3 py-1 rounded-full font-medium">
-                  -{discount}%
-                </span>
+                <span className="text-xs bg-[#FF33331A] text-[#FF3333] px-3 py-1 rounded-full font-medium">-{discount}%</span>
               )}
             </>
           )}
         </div>
       </div>
     </div>
-  );
+  )
+
+  if (productId) {
+    return (
+      <Link to={`/product/${productId}`}> {content} </Link>
+    )
+  }
+
+  return content
 }

@@ -64,6 +64,7 @@ const NewArrivals = () => {
             {products.map((p) => (
               <ProductCard
                 key={p._id || p.id}
+                productId={p._id || p.id}
                 image={p.image && p.image.length ? p.image[0] : ''}
                 title={p.name || p.title}
                 rating={p.averageRatings}

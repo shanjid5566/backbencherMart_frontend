@@ -67,6 +67,7 @@ const TopSelling = () => {
             {productsToShow.map((p) => (
               <ProductCard
                 key={p._id || p.id}
+                productId={p._id || p.id || p.product?.id || p.product?._id}
                 image={(p.image && p.image.length && p.image[0]) || p.product?.image?.[0] || p.image || p.imageUrl}
                 title={p.name || p.title || p.product?.name}
                 rating={p.averageRatings || p.rating || p.product?.averageRatings}
