@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import Container from "./Container";
 import {
@@ -12,9 +12,11 @@ import {
   FiGrid,
   FiSun,
   FiMoon,
+  FiLogOut,
 } from "react-icons/fi";
 import { toggleTheme, selectIsDarkMode } from "../features/theme/themeSlice";
 import { fetchCart } from '../features/cart/cartSlice'
+import { logout } from '../features/authentication/authSlice'
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -22,6 +24,7 @@ const Header = () => {
   const [mobileShopOpen, setMobileShopOpen] = useState(false);
   
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isDarkMode = useSelector(selectIsDarkMode);
   const reduxToken = useSelector((s) => s.auth?.token)
 
@@ -171,9 +174,34 @@ const Header = () => {
                 Log in
               </Link>
             ) : (
-              <Link to="/dashboard" className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
-                <FiUser className="w-6 h-6" />
-              </Link>
+              <div className="hidden lg:block relative group">
+                <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                  <FiUser className="w-6 h-6" />
+                </button>
+                
+                {/* User dropdown */}
+                <div className="absolute -right-36 top-full mt-2 w-48 bg-white dark:bg-dark-surface shadow-xl rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transform translate-y-1 group-hover:translate-y-0 transition-all ring-1 ring-black/5 dark:ring-white/10">
+                  <div className="py-1">
+                    <Link 
+                      to="/dashboard" 
+                      className="flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white transition-colors"
+                    >
+                      <FiUser className="w-4 h-4" />
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={() => {
+                        dispatch(logout())
+                        navigate('/login')
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      <FiLogOut className="w-4 h-4" />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              </div>
             )}
             <button
               aria-label="Toggle menu"
