@@ -8,6 +8,7 @@ import {
   selectProductsLoading, 
   selectProductsError 
 } from '../../../../features/products/productsSlice'
+import { Link } from 'react-router'
 
 
 const NewArrivals = () => {
@@ -77,7 +78,7 @@ const NewArrivals = () => {
         )}
 
         <div className="mt-8 flex justify-center">
-          <button className="px-16 py-3 rounded-2xl border border-gray-300 dark:border-gray-600 cursor-pointer">View All</button>
+          <Link to="/new-arrivals" className="px-16 py-3 rounded-2xl border border-gray-300 dark:border-gray-600 cursor-pointer">View All</Link>
         </div>
       </Container>
     </section>

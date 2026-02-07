@@ -171,7 +171,7 @@ const Header = () => {
                 Log in
               </Link>
             ) : (
-              <Link to="/account" className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+              <Link to="/dashboard" className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                 <FiUser className="w-6 h-6" />
               </Link>
             )}
@@ -276,7 +276,7 @@ const Header = () => {
                   Log in
                 </Link>
               ) : (
-                <Link to="/account" onClick={closeMenu} className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white text-center transition-colors">
+                <Link to="/dashboard" onClick={closeMenu} className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white text-center transition-colors">
                   Account
                 </Link>
               )}

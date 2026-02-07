@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import Container from '../../../../components/Container'
 import ProductCard from '../../../../components/ProductCard'
+import { Link } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchTopSelling } from '../../../../features/products/productsAPI'
 import {
@@ -80,7 +81,7 @@ const TopSelling = () => {
         )}
 
         <div className="mt-8 flex justify-center">
-          <button className="px-16 py-3 rounded-2xl border border-gray-300 dark:border-gray-600 cursor-pointer">View All</button>
+          <Link to="/shop" className="px-16 py-3 rounded-2xl border border-gray-300 dark:border-gray-600 cursor-pointer">View All</Link>
         </div>
       </Container>
     </section>

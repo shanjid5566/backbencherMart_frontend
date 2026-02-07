@@ -11,7 +11,7 @@ export const fetchCart = createAsyncThunk('cart/fetch', async (_, { getState, re
   const token = getState().auth?.token || null
   if (!token) return rejectWithValue({ message: 'login_required' })
   try {
-    const res = await apiClient.get('/api/cart')
+    const res = await apiClient.get('/cart')
     return res.data
   } catch (err) {
     return rejectWithValue(err.response?.data || { message: err.message })
@@ -22,7 +22,7 @@ export const addToCart = createAsyncThunk('cart/add', async (payload, { getState
   const token = getState().auth?.token || null
   if (!token) return rejectWithValue({ message: 'login_required' })
   try {
-    const res = await apiClient.post('/api/cart/items', payload)
+    const res = await apiClient.post('/cart/items', payload)
     return res.data
   } catch (err) {
     return rejectWithValue(err.response?.data || { message: err.message })
@@ -33,7 +33,7 @@ export const updateCartItem = createAsyncThunk('cart/updateItem', async ({ itemI
   const token = getState().auth?.token || null
   if (!token) return rejectWithValue({ message: 'login_required' })
   try {
-    const res = await apiClient.patch(`/api/cart/items/${itemId}`, { quantity })
+    const res = await apiClient.patch(`/cart/items/${itemId}`, { quantity })
     return res.data
   } catch (err) {
     return rejectWithValue(err.response?.data || { message: err.message })
@@ -44,7 +44,7 @@ export const removeCartItem = createAsyncThunk('cart/removeItem', async ({ itemI
   const token = getState().auth?.token || null
   if (!token) return rejectWithValue({ message: 'login_required' })
   try {
-    const res = await apiClient.delete(`/api/cart/items/${itemId}`)
+    const res = await apiClient.delete(`/cart/items/${itemId}`)
     return res.data
   } catch (err) {
     return rejectWithValue(err.response?.data || { message: err.message })
@@ -55,7 +55,7 @@ export const checkout = createAsyncThunk('cart/checkout', async (paymentData, { 
   const token = getState().auth?.token || null
   if (!token) return rejectWithValue({ message: 'login_required' })
   try {
-    const res = await apiClient.post('/api/cart/checkout', paymentData)
+    const res = await apiClient.post('/cart/checkout', paymentData)
     return res.data
   } catch (err) {
     return rejectWithValue(err.response?.data || { message: err.message })
