@@ -1,56 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchCart, updateCartItem, removeCartItem } from '../../features/cart/cartSlice'
 import { FiTrash2, FiTag, FiArrowRight } from 'react-icons/fi';
 import Container from '../../components/Container';
 import Breadcrumb from '../../components/Breadcrumb';
 
 const CartPage = () => {
-  // Sample cart data - replace with Redux state later
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Gradient Graphic T-shirt',
-      size: 'Large',
-      color: 'White',
-      price: 145,
-      quantity: 1,
-      image: 'https://via.placeholder.com/100x100?text=T-shirt'
-    },
-    {
-      id: 2,
-      name: 'Checkered Shirt',
-      size: 'Medium',
-      color: 'Red',
-      price: 180,
-      quantity: 1,
-      image: 'https://via.placeholder.com/100x100?text=Shirt'
-    },
-    {
-      id: 3,
-      name: 'Skinny Fit Jeans',
-      size: 'Large',
-      color: 'Blue',
-      price: 240,
-      quantity: 1,
-      image: 'https://via.placeholder.com/100x100?text=Jeans'
-    }
-  ]);
+  const dispatch = useDispatch()
+  const token = useSelector((s) => s.auth?.token)
+  const cartState = useSelector((s) => s.cart || { items: [], loading: false })
+  const cartItems = cartState.items || []
 
   const [promoCode, setPromoCode] = useState('');
 
+  useEffect(() => {
+    if (token) dispatch(fetchCart())
+  }, [token, dispatch])
+
   const updateQuantity = (id, delta) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, item.quantity + delta) }
-          : item
-      )
-    );
-  };
+    const current = cartItems.find(i => i.id === id)
+    if (!current) return
+    const nextQty = Math.max(1, (current.quantity || 1) + delta)
+    dispatch(updateCartItem({ itemId: id, quantity: nextQty }))
+  }
 
   const removeItem = (id) => {
-    setCartItems(items => items.filter(item => item.id !== id));
-  };
+    dispatch(removeCartItem({ itemId: id }))
+  }
 
   const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const discountPercent = 20;
@@ -67,8 +44,8 @@ const CartPage = () => {
     <div className="">
       <Container>
         {/* Breadcrumb */}
-        <div className="py-4 md:py-6">
-          <Breadcrumb items={breadcrumbItems} />
+          <div className="py-4 md:py-6">
+          <Breadcrumb category="Cart" />
         </div>
 
         {/* Page Title */}
@@ -76,7 +53,17 @@ const CartPage = () => {
           YOUR CART
         </h1>
 
-        {cartItems.length === 0 ? (
+        {(!token) ? (
+          <div className="text-center py-12 md:py-20">
+            <p className="text-gray-500 dark:text-gray-400 text-lg mb-6">Please log in to view your cart</p>
+            <Link
+              to="/login"
+              className="inline-block px-6 py-3 bg-black dark:bg-white text-white dark:text-black rounded-full font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors"
+            >
+              Log in
+            </Link>
+          </div>
+        ) : cartItems.length === 0 ? (
           <div className="text-center py-12 md:py-20">
             <p className="text-gray-500 dark:text-gray-400 text-lg mb-6">Your cart is empty</p>
             <Link

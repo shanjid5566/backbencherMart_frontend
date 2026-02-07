@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from 'react-redux'
+import { addToCart } from '../../../../features/cart/cartSlice'
 import { FiMinus, FiPlus, FiCheck } from "react-icons/fi";
 
 const ProductInfo = ({ product }) => {
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState("Large");
   const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch()
 
   const renderStars = (rating) => {
     const stars = [];
@@ -150,7 +153,27 @@ const ProductInfo = ({ product }) => {
         </div>
 
         {/* Add to Cart Button (half width on mobile, fills on desktop) */}
-        <button className="w-1/2 sm:flex-1 sm:max-w-md bg-black dark:bg-white text-white dark:text-black font-semibold rounded-full px-6 py-3 hover:bg-gray-800 dark:hover:bg-gray-100 transition-all active:scale-[0.98] text-sm sm:text-base">
+        <button
+          onClick={async () => {
+            const token = (typeof window !== 'undefined' && localStorage.getItem('token')) || null
+            if (!token) {
+              // redirect to login if not authenticated
+              window.location.href = '/login'
+              return
+            }
+            const payload = {
+              productId: product.id,
+              quantity,
+              selectedOptions: { color: product.colors[selectedColor]?.name, size: selectedSize },
+            }
+            try {
+              await dispatch(addToCart(payload)).unwrap()
+            } catch (e) {
+              // ignore - error handled in slice/UI elsewhere
+            }
+          }}
+          className="w-1/2 sm:flex-1 sm:max-w-md bg-black dark:bg-white text-white dark:text-black font-semibold rounded-full px-6 py-3 hover:bg-gray-800 dark:hover:bg-gray-100 transition-all active:scale-[0.98] text-sm sm:text-base"
+        >
           Add to Cart
         </button>
       </div>

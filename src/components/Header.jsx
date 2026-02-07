@@ -14,6 +14,7 @@ import {
   FiMoon,
 } from "react-icons/fi";
 import { toggleTheme, selectIsDarkMode } from "../features/theme/themeSlice";
+import { fetchCart } from '../features/cart/cartSlice'
 
 const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -22,6 +23,7 @@ const Header = () => {
   
   const dispatch = useDispatch();
   const isDarkMode = useSelector(selectIsDarkMode);
+  const reduxToken = useSelector((s) => s.auth?.token)
 
   // Local auth state (fallback to localStorage so header works before reducer is added)
   const [authUser, setAuthUser] = useState(() => {
@@ -41,6 +43,11 @@ const Header = () => {
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
   }, [])
+
+  useEffect(() => {
+    const token = reduxToken || authToken
+    if (token) dispatch(fetchCart())
+  }, [reduxToken, authToken, dispatch])
 
   const closeMenu = useCallback(() => {
     setMobileOpen(false);
@@ -156,9 +163,9 @@ const Header = () => {
                 <FiMoon className="w-5 h-5 sm:w-6 sm:h-6" />
               )}
             </button>
-            <button className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+            <Link to="/cart" className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
               <FiShoppingCart className="w-6 h-6" />
-            </button>
+            </Link>
             {(!authUser && !authToken) ? (
               <Link to="/login" className="hidden lg:inline-flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm font-medium">
                 Log in
@@ -261,9 +268,9 @@ const Header = () => {
             </nav>
 
             <div className="mt-6 border-t dark:border-gray-700 pt-4 flex gap-3">
-              <button className="flex-1 py-3 bg-black dark:bg-white dark:text-black text-white rounded-md transition-colors">
+              <Link to="/cart" className="flex-1 py-3 bg-black dark:bg-white dark:text-black text-white rounded-md transition-colors">
                 View Cart
-              </button>
+              </Link>
               {(!authUser && !authToken) ? (
                 <Link to="/login" onClick={closeMenu} className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white text-center transition-colors">
                   Log in
