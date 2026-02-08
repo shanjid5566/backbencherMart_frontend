@@ -33,9 +33,14 @@ export const updateCartItem = createAsyncThunk('cart/updateItem', async ({ itemI
   const token = getState().auth?.token || null
   if (!token) return rejectWithValue({ message: 'login_required' })
   try {
-    const res = await apiClient.patch(`/cart/items/${itemId}`, { quantity })
+    const res = await apiClient.patch('/cart/items', { itemId, quantity })
     return res.data
   } catch (err) {
+    console.error('Update cart item error:', {
+      status: err.response?.status,
+      data: err.response?.data,
+      message: err.message
+    })
     return rejectWithValue(err.response?.data || { message: err.message })
   }
 })
@@ -47,6 +52,11 @@ export const removeCartItem = createAsyncThunk('cart/removeItem', async ({ itemI
     const res = await apiClient.delete(`/cart/items/${itemId}`)
     return res.data
   } catch (err) {
+    console.error('Delete cart item error:', {
+      status: err.response?.status,
+      data: err.response?.data,
+      message: err.message
+    })
     return rejectWithValue(err.response?.data || { message: err.message })
   }
 })

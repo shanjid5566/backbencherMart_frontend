@@ -1,13 +1,33 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { login, register, verifyOtp } from './authAPI'
 
-const initialState = {
-  user: null,
-  token: null,
-  loading: false,
-  error: null,
-  verifyPendingEmail: null,
+// Load token and user from localStorage on app initialization
+const getInitialAuthState = () => {
+  try {
+    const token = localStorage.getItem('token')
+    const userString = localStorage.getItem('user')
+    const user = userString ? JSON.parse(userString) : null
+    
+    return {
+      user,
+      token,
+      loading: false,
+      error: null,
+      verifyPendingEmail: null,
+    }
+  } catch (error) {
+    console.error('Error loading auth state from localStorage:', error)
+    return {
+      user: null,
+      token: null,
+      loading: false,
+      error: null,
+      verifyPendingEmail: null,
+    }
+  }
 }
+
+const initialState = getInitialAuthState()
 
 const authSlice = createSlice({
   name: 'auth',

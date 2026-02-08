@@ -27,6 +27,8 @@ const Header = () => {
   const navigate = useNavigate();
   const isDarkMode = useSelector(selectIsDarkMode);
   const reduxToken = useSelector((s) => s.auth?.token)
+  const cartItems = useSelector((s) => s.cart?.items || [])
+  const cartItemCount = cartItems.reduce((total, item) => total + (item.quantity || 0), 0)
 
   // Local auth state (fallback to localStorage so header works before reducer is added)
   const [authUser, setAuthUser] = useState(() => {
@@ -166,8 +168,13 @@ const Header = () => {
                 <FiMoon className="w-5 h-5 sm:w-6 sm:h-6" />
               )}
             </button>
-            <Link to="/cart" className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+            <Link to="/cart" className="hidden lg:inline-flex p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg relative">
               <FiShoppingCart className="w-6 h-6" />
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartItemCount > 99 ? '99+' : cartItemCount}
+                </span>
+              )}
             </Link>
             {(!authUser && !authToken) ? (
               <Link to="/login" className="hidden lg:inline-flex items-center px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-sm font-medium">
@@ -296,8 +303,14 @@ const Header = () => {
             </nav>
 
             <div className="mt-6 border-t dark:border-gray-700 pt-4 flex gap-3">
-              <Link to="/cart" className="flex-1 py-3 bg-black dark:bg-white dark:text-black text-white rounded-md transition-colors">
+              <Link to="/cart" className="flex-1 py-3 bg-black dark:bg-white dark:text-black text-white rounded-md transition-colors relative flex items-center justify-center gap-2">
+                <FiShoppingCart className="w-5 h-5" />
                 View Cart
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+                    {cartItemCount > 99 ? '99+' : cartItemCount}
+                  </span>
+                )}
               </Link>
               {(!authUser && !authToken) ? (
                 <Link to="/login" onClick={closeMenu} className="flex-1 py-3 border dark:border-gray-600 rounded-md dark:text-white text-center transition-colors">

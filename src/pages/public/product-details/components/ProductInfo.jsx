@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux'
+import { toast } from 'react-toastify'
 import { addToCart } from '../../../../features/cart/cartSlice'
 import { FiMinus, FiPlus, FiCheck } from "react-icons/fi";
 
@@ -168,8 +169,10 @@ const ProductInfo = ({ product }) => {
             }
             try {
               await dispatch(addToCart(payload)).unwrap()
+              toast.success('Product added to cart successfully!')
             } catch (e) {
-              // ignore - error handled in slice/UI elsewhere
+              const errorMessage = e?.message || 'Failed to add product to cart'
+              toast.error(errorMessage)
             }
           }}
           className="w-1/2 sm:flex-1 sm:max-w-md bg-black dark:bg-white text-white dark:text-black font-semibold rounded-full px-6 py-3 hover:bg-gray-800 dark:hover:bg-gray-100 transition-all active:scale-[0.98] text-sm sm:text-base"
