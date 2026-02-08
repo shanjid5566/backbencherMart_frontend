@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, Outlet, useNavigate, useLocation } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../../features/authentication/authSlice'
+import useThemeEffect from '../../hooks/useThemeEffect'
 import { FiUser, FiShoppingBag, FiSettings, FiLogOut, FiMenu, FiX } from 'react-icons/fi'
 
 const DashboardLayout = () => {
@@ -12,6 +13,9 @@ const DashboardLayout = () => {
   
   const user = useSelector((s) => s.auth?.user)
   const token = useSelector((s) => s.auth?.token)
+
+  // Apply theme effect
+  useThemeEffect()
 
   useEffect(() => {
     // Redirect to login if not authenticated

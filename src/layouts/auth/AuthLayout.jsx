@@ -1,7 +1,11 @@
 import React from 'react'
 import Container from '../../components/Container'
+import useThemeEffect from '../../hooks/useThemeEffect'
 
 export default function AuthLayout({ children }) {
+  // Apply theme effect
+  useThemeEffect()
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-dark-surface flex items-center">
       <Container>
