@@ -38,6 +38,7 @@ const authSlice = createSlice({
       state.token = null
       state.error = null
       state.verifyPendingEmail = null
+      localStorage.removeItem('pendingEmail')
       localStorage.removeItem('token')
       localStorage.removeItem('user')
     },
@@ -91,12 +92,12 @@ const authSlice = createSlice({
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.loading = false
         state.error = null
-        const payload = action.payload || {}
-        state.token = payload.token || payload.data?.token || null
-        state.user = payload.user || payload.data?.user || null
+        state.token = null
+        state.user = null
         state.verifyPendingEmail = null
-        if (state.token) localStorage.setItem('token', state.token)
-        if (state.user) localStorage.setItem('user', JSON.stringify(state.user))
+        localStorage.removeItem('pendingEmail')
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false

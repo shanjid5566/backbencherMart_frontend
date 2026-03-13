@@ -14,7 +14,6 @@ import PaymentSuccessPage from "./pages/public/PaymentSuccessPage";
 import PaymentCancelPage from "./pages/public/PaymentCancelPage";
 import LoginPage from "./pages/public/auth/Login";
 import RegisterPage from "./pages/public/auth/Register";
-import VerifyOtpPage from "./pages/public/auth/VerifyOtp";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import OrdersPage from "./pages/dashboard/OrdersPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
@@ -40,7 +39,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/verify-otp" element={<VerifyOtpPage />} />
+        <Route path="/verify-otp" element={<RegisterPage />} />
 
         <Route path="/" element={<HomeLayout />}>
           <Route index element={<HomePage />} />

@@ -6,7 +6,12 @@ export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const res = await apiService.post('/auth/login', credentials)
+      const res = await apiService.post('/auth/login', credentials, {
+        skipAuth: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
       return res
     } catch (err) {
       return rejectWithValue(err)
@@ -18,7 +23,12 @@ export const register = createAsyncThunk(
   'auth/register',
   async (payload, { rejectWithValue }) => {
     try {
-      const res = await apiService.post('/auth/register', payload)
+      const res = await apiService.post('/auth/register', payload, {
+        skipAuth: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
       return res
     } catch (err) {
       return rejectWithValue(err)
@@ -28,10 +38,41 @@ export const register = createAsyncThunk(
 
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
-  async ({ email, code }, { rejectWithValue }) => {
+  async ({ email, code, otp }, { rejectWithValue }) => {
     try {
-      const res = await apiService.post('/auth/verify-otp', { email, code })
-      return res
+      const verificationCode = otp || code
+      try {
+        const res = await apiService.post(
+          '/auth/verify-otp',
+          { email, otp: verificationCode },
+          {
+            skipAuth: true,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        return res
+      } catch (otpErr) {
+        const needsCodeField =
+          otpErr?.message && otpErr.message.toLowerCase().includes('email and code required')
+
+        if (!needsCodeField) {
+          throw otpErr
+        }
+
+        const fallbackRes = await apiService.post(
+          '/auth/verify-otp',
+          { email, code: verificationCode },
+          {
+            skipAuth: true,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        return fallbackRes
+      }
     } catch (err) {
       return rejectWithValue(err)
     }

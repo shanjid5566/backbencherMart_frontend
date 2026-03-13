@@ -32,6 +32,12 @@ const processQueue = (error, token = null) => {
 apiClient.interceptors.request.use(
   (config) => {
     try {
+      if (config.skipAuth) {
+        config.headers = config.headers || {}
+        delete config.headers.Authorization
+        return config
+      }
+
       // support both `token` (used by authSlice) and `authToken` (older key)
       const token = localStorage.getItem('token') || localStorage.getItem('authToken')
       if (token) {

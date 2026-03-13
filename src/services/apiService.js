@@ -3,10 +3,15 @@ import apiClient from './apiClient'
 const parseError = (error) => {
   if (!error) return { message: 'Unknown error' }
   if (error.response) {
+    const responseData = error.response.data || {}
     return {
-      message: error.response.data?.message || error.response.statusText,
+      message:
+        responseData.message ||
+        responseData.error ||
+        error.response.statusText ||
+        'Request failed',
       status: error.response.status,
-      data: error.response.data,
+      data: responseData,
     }
   }
   return { message: error.message }
